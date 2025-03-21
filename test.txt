@@ -1,0 +1,79 @@
+(defmacro while (test &body body)
+  "Implements a while loop."
+  `(do ()
+       ((not ,test))
+     ,@body))
+
+(defun factorial (n)
+  "Computes the factorial of a number recursively."
+  (if (<= n 1)
+      1
+      (* n (factorial (- n 1)))))
+
+(defun fibonacci (n)
+  "Computes the nth Fibonacci number using recursion."
+  (if (<= n 1)
+      n
+      (+ (fibonacci (- n 1)) (fibonacci (- n 2)))))
+
+(defun mapcar* (fn lst)
+  "Applies a function to each element in a list."
+  (if (null lst)
+      '()
+      (cons (funcall fn (car lst)) (mapcar* fn (cdr lst)))))
+
+(defun filter (pred lst)
+  "Filters a list based on a predicate function."
+  (cond ((null lst) '())
+        ((funcall pred (car lst)) (cons (car lst) (filter pred (cdr lst))))
+        (t (filter pred (cdr lst)))))
+
+(defun reduce (fn lst init)
+  "Reduces a list to a single value using a binary function."
+  (if (null lst)
+      init
+      (reduce fn (cdr lst) (funcall fn init (car lst)))))
+
+(defun sum-list (lst)
+  "Computes the sum of a list using reduce."
+  (reduce #'+ lst 0))
+
+(defun list-reverse (lst)
+  "Reverses a list."
+  (reduce (lambda (acc x) (cons x acc)) lst '()))
+
+(defun quicksort (lst)
+  "Sorts a list using the QuickSort algorithm."
+  (if (or (null lst) (null (cdr lst)))
+      lst
+      (let* ((pivot (car lst))
+             (rest (cdr lst))
+             (smaller (filter (lambda (x) (<= x pivot)) rest))
+             (greater (filter (lambda (x) (> x pivot)) rest)))
+        (append (quicksort smaller) (list pivot) (quicksort greater)))))
+
+(defun tree-sum (tree)
+  "Computes the sum of all numbers in a nested tree structure."
+  (cond ((null tree) 0)
+        ((numberp tree) tree)
+        ((atom tree) 0)
+        (t (+ (tree-sum (car tree)) (tree-sum (cdr tree))))))
+
+(defun test-suite ()
+  "Runs various test cases."
+  (format t "Factorial of 5: ~A~%" (factorial 5))
+  (format t "Fibonacci of 10: ~A~%" (fibonacci 10))
+  (format t "Mapping square function: ~A~%" (mapcar* (lambda (x) (* x x)) '(1 2 3 4 5)))
+  (format t "Filtering evens: ~A~%" (filter #'evenp '(1 2 3 4 5 6)))
+  (format t "Sum of list: ~A~%" (sum-list '(1 2 3 4 5)))
+  (format t "Reversed list: ~A~%" (list-reverse '(1 2 3 4 5)))
+  (format t "Quicksort: ~A~%" (quicksort '(5 3 8 1 2 7 4 6)))
+  (format t "Tree sum: ~A~%" (tree-sum '(1 (2 3) (4 (5 6) 7))))
+  (format t "While loop (counting to 5): ~%")
+  (let ((x 0))
+    (while (< x 5)
+      (format t "~A " x)
+      (setq x (+ x 1))))
+  (format t "~%Done.~%"))
+
+(test-suite)

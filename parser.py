@@ -6,19 +6,58 @@ class AtomType(Enum):
     NUMBER = "Number"
     STRING = "String"
     BOOLEAN = "Boolean"
+    CHARACTER = "Character"
     SYMBOL = "Symbol"
-    IF = "if"
-    FUNCTION = "Function"
 
-Keywords = {
+class SpecialForm(Enum):
+    QUOTE = "Comment"
+    IF = "If statement"
+    COND = "Conditional statement"
+    PROGN = "Sequential execution"
+    LET = "Local assignment"
+    LETSEQ = "Sequential local Assignment"
+    SETQ = "Global assignment"
+    LAMBDA = "Anonymous function"
+    DEFUN = "Define function"
+    DEFMACRO = "Define MACRO"
+    
+class BuiltIn(Enum):
+    ADD = "+"
+    SUB = "-"
+    MULT = "*"
+    DIV = "/"
+    LEQ = "<="
+
+# Used to match symbols to their AtomType/SpecialForm
+reservedSymbols = {
+    # Atoms
     "T" : AtomType.BOOLEAN,
     "NIL" : AtomType.BOOLEAN,
-    "if" : AtomType.IF,
-    "defun" : AtomType.FUNCTION
+    
+    # Built-In Functions
+    "+" : BuiltIn.ADD,
+    "-" : BuiltIn.SUB,
+    "*" : BuiltIn.MULT,
+    "<=" : BuiltIn.LEQ,
+    
+    # Special Forms
+    "quote" : SpecialForm.QUOTE,
+    "if" : SpecialForm.IF,
+    "cond" : SpecialForm.COND,
+    "progn" : SpecialForm.PROGN,
+
+    "let" : SpecialForm.LET,
+    "let*" : SpecialForm.LETSEQ,
+    "setq" : SpecialForm.SETQ,    
+    
+    # Define functions/cacros
+    "lambda" : SpecialForm.LAMBDA,
+    "defun" : SpecialForm.DEFUN,
+    "defmacro" : SpecialForm.DEFMACRO,
 }
 
 class Node: 
-    def __init__(self, val: any, type: AtomType):
+    def __init__(self, val, type):
         self.val = val
         self.type = type
         self.children = []
@@ -43,7 +82,7 @@ class Function:
 
 class Parser:
     def __init__(self):
-        self.funcTable = {}
+        self.symbolTable = {}
     
     # Tokenize an expression then convert to AST
     def runParse(self, expression: str) -> Node:
@@ -70,27 +109,31 @@ class Parser:
                 self.addFunc(tokenList)
 
             # Pop next token as operator
-            subExpression = Node(val = tokenList.pop(0), type = "operator")
+            nextToken = tokenList.pop(0)
+            subExpression = self.tokenToNode(nextToken)
 
             # Recursively process sub-expressions
             while tokenList[0] != ")":
-                subExpression.children.append(self.interpret(tokenList))
+                subExpression.children.append(self.parse(tokenList))
             
             # Pop closing parentheses
             tokenList.pop(0)
             return subExpression
-        # Inside expression, so return an Atom 
+        # Inside expression
         else:
-            numberPattern = r'^-?\d+(\.\d+)?$'
-            type = AtomType.SYMBOL
-            if nextToken in Keywords:
-                type = Keywords[nextToken]
-            elif nextToken[0] == "\"" and nextToken[-1] == "\"":
-                type = AtomType.STRING
-            elif re.fullmatch(numberPattern, nextToken):
-                return Node(val = nextToken, type = AtomType.NUMBER)
-            return Node(nextToken, type)
-    
+            return self.tokenToNode(nextToken)
+
+    # Given a token, return a node representing it
+    def tokenToNode(self, nextToken) -> Node:
+        numberPattern = r'^-?\d+(\.\d+)?$'
+        if nextToken in reservedSymbols:
+            return Node(nextToken, reservedSymbols[nextToken])
+        elif nextToken[0] == "\"" and nextToken[-1] == "\"":
+            return Node(nextToken, AtomType.STRING)
+        elif re.fullmatch(numberPattern, nextToken):
+            return Node(int(nextToken), AtomType.STRING)
+        return Node(nextToken, AtomType.SYMBOL)
+
     def addFunc(self, tokenList: List[str]) -> Function:
         # Pop next three tokens : [defun, funcName, (]
         tokenList.pop(0)
@@ -116,13 +159,16 @@ class Parser:
         tokenList.pop(0)
 
         # Add to funcTable
-        self.funcTable[funcName : newFunc]
+        self.symbolTable[funcName] = newFunc
         return newFunc
 
 if __name__ == "__main__":
     myParser = Parser()
-    ast = myParser.runParse("(if (<= n 1) 1 (* n (factorial (- n 1))))")
+    ast = myParser.runParse("(defun factorial (n) \"Computes the factorial of a number recursively.\" (if (<= n 1) 1 (* n (factorial (- n 1)))))")
     ast.print_tree()
 
     ast = myParser.runParse("(defun fibonacci (n) \"Computes the nth Fibonacci number using recursion.\" (if (<= n 1) n (+ (fibonacci (- n 1)) (fibonacci (- n 2)))))")
+    ast.print_tree()
+    
+    ast = myParser.runParse("(defun filter (pred lst) \"Filters a list based on a predicate function.\" (cond ((null lst) '()) ((funcall pred (car lst)) (cons (car lst) (filter pred (cdr lst)))) (t (filter pred (cdr lst)))))")
     ast.print_tree()
