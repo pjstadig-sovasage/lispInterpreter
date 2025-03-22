@@ -8,8 +8,8 @@ class AtomType(Enum):
     BOOLEAN = "Boolean"
     CHARACTER = "Character"
     SYMBOL = "Symbol"
-
-class SpecialForm(Enum):
+    
+class BuiltIn(Enum):
     QUOTE = "Comment"
     IF = "If statement"
     COND = "Conditional statement"
@@ -21,7 +21,6 @@ class SpecialForm(Enum):
     DEFUN = "Define function"
     DEFMACRO = "Define MACRO"
     
-class BuiltIn(Enum):
     ADD = "+"
     SUB = "-"
     MULT = "*"
@@ -41,26 +40,29 @@ reservedSymbols = {
     "<=" : BuiltIn.LEQ,
     
     # Special Forms
-    "quote" : SpecialForm.QUOTE,
-    "if" : SpecialForm.IF,
-    "cond" : SpecialForm.COND,
-    "progn" : SpecialForm.PROGN,
+    "quote" : BuiltIn.QUOTE,
+    "if" : BuiltIn.IF,
+    "cond" : BuiltIn.COND,
+    "progn" : BuiltIn.PROGN,
 
-    "let" : SpecialForm.LET,
-    "let*" : SpecialForm.LETSEQ,
-    "setq" : SpecialForm.SETQ,    
+    "let" : BuiltIn.LET,
+    "let*" : BuiltIn.LETSEQ,
+    "setq" : BuiltIn.SETQ,    
     
     # Define functions/cacros
-    "lambda" : SpecialForm.LAMBDA,
-    "defun" : SpecialForm.DEFUN,
-    "defmacro" : SpecialForm.DEFMACRO,
+    "lambda" : BuiltIn.LAMBDA,
+    "defun" : BuiltIn.DEFUN,
+    "defmacro" : BuiltIn.DEFMACRO,
 }
 
 class Node: 
-    def __init__(self, val, type):
+    def __init__(self, val, type, children : List = None):
         self.val = val
         self.type = type
-        self.children = []
+        if not children:
+            self.children = []
+        else:
+            self.children = children
     
     def print_tree(self, level=0):
         # Print the current node with an indentation based on its level in the tree
@@ -70,59 +72,57 @@ class Node:
         for child in self.children:
             child.print_tree(level + 1)
 
-class Function:
-    def __init__(self, name: str, docstring: str, arguments: List[str]):
-        self.name = name
-        self.docstring = docstring
-        self.arguments = arguments
-        self.root = None
-    
-    def __repr__(self):
-        return f"Function: {self.name} Arguments: {self.arguments} \n{self.docstring}"
-
 class Parser:
+    class ParseList(list): 
+        def mpop(self, numPops: int):
+            res = self.pop(0)
+            for _ in range(1, numPops):
+                self.pop(0)
+            return res
+    
     def __init__(self):
-        self.symbolTable = {}
+        self.tokenList = Parser.ParseList([])
     
     # Tokenize an expression then convert to AST
     def runParse(self, expression: str) -> Node:
-        tokens = self.tokenize(expression)
-        print(tokens)
-        ast = self.parse(tokens)
-
-        return ast
+        self.tokenize(expression)
+        
+        return self.parse()
 
     # Turn string expression into a list of tokens
-    def tokenize(self, expression: str) -> List[str]:
+    def tokenize(self, expression: str):
         pattern = r'\"[^\"]*\"|\(|\)|[^\s()]+'
-        tokens = re.findall(pattern, expression)
-
-        return tokens
+        tokens = Parser.ParseList(re.findall(pattern, expression))
+        print(tokens)
+        self.tokenList = tokens
 
     # Create AST given a tokenized expression
-    def parse(self, tokenList: List[str]) -> Node:
-        nextToken = tokenList.pop(0)
+    def parse(self) -> Node:
+        nextToken = self.tokenList.mpop(1)
 
         # Start of new expression
         if nextToken == "(":
-            if tokenList[0] == "defun":
-                self.addFunc(tokenList)
+            if self.tokenList[0] == "defun":
+                self.parseFn()
 
+            if self.tokenList[0] == "cond":
+                return self.parseCond()
+            
             # Pop next token as operator
-            nextToken = tokenList.pop(0)
+            nextToken = self.tokenList.pop(0)
             subExpression = self.tokenToNode(nextToken)
 
             # Recursively process sub-expressions
-            while tokenList[0] != ")":
-                subExpression.children.append(self.parse(tokenList))
+            while self.tokenList[0] != ")":
+                subExpression.children.append(self.parse())
             
             # Pop closing parentheses
-            tokenList.pop(0)
+            self.tokenList.pop(0)
             return subExpression
         # Inside expression
         else:
             return self.tokenToNode(nextToken)
-
+        
     # Given a token, return a node representing it
     def tokenToNode(self, nextToken) -> Node:
         numberPattern = r'^-?\d+(\.\d+)?$'
@@ -133,34 +133,51 @@ class Parser:
         elif re.fullmatch(numberPattern, nextToken):
             return Node(int(nextToken), AtomType.STRING)
         return Node(nextToken, AtomType.SYMBOL)
+    
+    def parseCond(self) -> Node:
+        # Pop off "cond" and "(" 
+        self.tokenList.pop(0)
+        self.tokenList.pop(0)
+        
+        print(self.tokenList)
+        condNode = Node("cond", BuiltIn.COND)
+        
+        while self.tokenList[0] != "t":
+            condition = self.parse()
+            result = self.parse()
+            
+            condNode.children.append(condition)
+            condNode.children.append(result)
+            self.tokenList.pop(0)
+            self.tokenList.pop(0)
+            print(self.tokenList)
 
-    def addFunc(self, tokenList: List[str]) -> Function:
+        return condNode
+
+    def parseFn(self) -> Node:
         # Pop next three tokens : [defun, funcName, (]
-        tokenList.pop(0)
-        funcName = tokenList.pop(0)
-        tokenList.pop(0)
+        self.tokenList.pop(0)
+        fnName = self.tokenList.pop(0)
+        self.tokenList.pop(0)
 
         # Pop arguments 
         arguments = []
-        while tokenList[0] != ")":
-            arguments.append(tokenList.pop(0))
-        tokenList.pop(0)
+        while self.tokenList[0] != ")":
+            arguments.append(self.tokenList.pop(0))
+        self.tokenList.pop(0)
 
         # Pop doc string
-        nextToken = tokenList[0]
+        nextToken = self.tokenList[0]
         docstring = ""
         if nextToken[0] == "\"" and nextToken[-1] == "\"":
             docstring = nextToken
             print("Docstring is:", nextToken)
-            tokenList.pop(0)
+            self.tokenList.pop(0)
         
-        # Create function
-        newFunc = Function(funcName, docstring, arguments)
-        tokenList.pop(0)
-
-        # Add to funcTable
-        self.symbolTable[funcName] = newFunc
-        return newFunc
+        # Build function node
+        newFn = Node("defun", BuiltIn.DEFUN, [fnName, arguments, docstring])
+        self.tokenList.pop(0)
+        return newFn
 
 if __name__ == "__main__":
     myParser = Parser()
@@ -170,5 +187,8 @@ if __name__ == "__main__":
     ast = myParser.runParse("(defun fibonacci (n) \"Computes the nth Fibonacci number using recursion.\" (if (<= n 1) n (+ (fibonacci (- n 1)) (fibonacci (- n 2)))))")
     ast.print_tree()
     
-    ast = myParser.runParse("(defun filter (pred lst) \"Filters a list based on a predicate function.\" (cond ((null lst) '()) ((funcall pred (car lst)) (cons (car lst) (filter pred (cdr lst)))) (t (filter pred (cdr lst)))))")
+    # ast = myParser.runParse("(defun filter (pred lst) \"Filters a list based on a predicate function.\" (cond ((null lst) '()) ((funcall pred (car lst)) (cons (car lst) (filter pred (cdr lst)))) (t (filter pred (cdr lst)))))")
+    # ast.print_tree()
+    
+    ast = myParser.runParse("(cond ((> x 10) \"Greater than 10\") ((< x 10) \"Less than 10\") ((= x 10) \"Equal to 10!\") (t 'other))")
     ast.print_tree()

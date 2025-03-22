@@ -1,0 +1,47 @@
+['(', 'defun', 'factorial', '(', 'n', ')', '"Computes the factorial of a number recursively."', '(', 'if', '(', '<=', 'n', '1', ')', '1', '(', '*', 'n', '(', 'factorial', '(', '-', 'n', '1', ')', ')', ')', ')', ')']
+Docstring is: "Computes the factorial of a number recursively."
+(BuiltIn.IF) if
+  (BuiltIn.LEQ) <=
+    (AtomType.SYMBOL) n
+    (AtomType.STRING) 1
+  (AtomType.STRING) 1
+  (BuiltIn.MULT) *
+    (AtomType.SYMBOL) n
+    (AtomType.SYMBOL) factorial
+      (BuiltIn.SUB) -
+        (AtomType.SYMBOL) n
+        (AtomType.STRING) 1
+['(', 'defun', 'fibonacci', '(', 'n', ')', '"Computes the nth Fibonacci number using recursion."', '(', 'if', '(', '<=', 'n', '1', ')', 'n', '(', '+', '(', 'fibonacci', '(', '-', 'n', '1', ')', ')', '(', 'fibonacci', '(', '-', 'n', '2', ')', ')', ')', ')', ')']
+Docstring is: "Computes the nth Fibonacci number using recursion."
+(BuiltIn.IF) if
+  (BuiltIn.LEQ) <=
+    (AtomType.SYMBOL) n
+    (AtomType.STRING) 1
+  (AtomType.SYMBOL) n
+  (BuiltIn.ADD) +
+    (AtomType.SYMBOL) fibonacci
+      (BuiltIn.SUB) -
+        (AtomType.SYMBOL) n
+        (AtomType.STRING) 1
+    (AtomType.SYMBOL) fibonacci
+      (BuiltIn.SUB) -
+        (AtomType.SYMBOL) n
+        (AtomType.STRING) 2
+['(', 'cond', '(', '(', '>', 'x', '10', ')', '"Greater than 10"', ')', '(', '(', '<', 'x', '10', ')', '"Less than 10"', ')', '(', '(', '=', 'x', '10', ')', '"Equal to 10!"', ')', '(', 't', "'other", ')', ')']
+['(', '>', 'x', '10', ')', '"Greater than 10"', ')', '(', '(', '<', 'x', '10', ')', '"Less than 10"', ')', '(', '(', '=', 'x', '10', ')', '"Equal to 10!"', ')', '(', 't', "'other", ')', ')']
+['(', '<', 'x', '10', ')', '"Less than 10"', ')', '(', '(', '=', 'x', '10', ')', '"Equal to 10!"', ')', '(', 't', "'other", ')', ')']
+['(', '=', 'x', '10', ')', '"Equal to 10!"', ')', '(', 't', "'other", ')', ')']
+['t', "'other", ')', ')']
+(BuiltIn.COND) cond
+  (AtomType.SYMBOL) >
+    (AtomType.SYMBOL) x
+    (AtomType.STRING) 10
+  (AtomType.STRING) "Greater than 10"
+  (AtomType.SYMBOL) <
+    (AtomType.SYMBOL) x
+    (AtomType.STRING) 10
+  (AtomType.STRING) "Less than 10"
+  (AtomType.SYMBOL) =
+    (AtomType.SYMBOL) x
+    (AtomType.STRING) 10
+  (AtomType.STRING) "Equal to 10!"
