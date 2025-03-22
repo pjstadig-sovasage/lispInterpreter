@@ -138,17 +138,21 @@ class Parser:
         # Pop off "cond" and "(" 
         self.tokenList.mpop(2)
         
-        print(self.tokenList)
-        condNode = Node("cond", BuiltIn.COND)
-        
-        while self.tokenList[0] != "t":
-            condition = self.parse()
-            result = self.parse()
+        # Recursively append condition : result pairs to children
+        condNode = Node("cond", BuiltIn.COND) 
+        while self.tokenList and self.tokenList[0] != "t":
+            condNode.children.append(self.parse())
+            condNode.children.append(self.parse())
             
-            condNode.children.append(condition)
-            condNode.children.append(result)
+            # Pop off the ')' '(' and enter next condition 
             self.tokenList.mpop(2)
             print(self.tokenList)
+        
+        # Append else condition
+        if self.tokenList and self.tokenList[0] == "t":
+            # Pop off 't' and append else result
+            self.tokenList.mpop()
+            condNode.children.append(self.parse())
 
         return condNode
 
@@ -189,4 +193,10 @@ if __name__ == "__main__":
     # ast.print_tree()
     
     ast = myParser.runParse("(cond ((> x 10) \"Greater than 10\") ((< x 10) \"Less than 10\") ((= x 10) \"Equal to 10!\") (t 'other))")
+    ast.print_tree()
+    
+    ast = myParser.runParse("(cond ((> x 10) \"Greater than 10\") ((< x 5) \"Less than 5\"))")
+    ast.print_tree()
+    
+    ast = myParser.runParse("(+ 10 (cond ((> x 10) 5) ((< x 5) 3) ((= x 7) 2) (t 0)))")
     ast.print_tree()

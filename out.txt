@@ -28,7 +28,6 @@ Docstring is: "Computes the nth Fibonacci number using recursion."
         (AtomType.SYMBOL) n
         (AtomType.STRING) 2
 ['(', 'cond', '(', '(', '>', 'x', '10', ')', '"Greater than 10"', ')', '(', '(', '<', 'x', '10', ')', '"Less than 10"', ')', '(', '(', '=', 'x', '10', ')', '"Equal to 10!"', ')', '(', 't', "'other", ')', ')']
-['(', '>', 'x', '10', ')', '"Greater than 10"', ')', '(', '(', '<', 'x', '10', ')', '"Less than 10"', ')', '(', '(', '=', 'x', '10', ')', '"Equal to 10!"', ')', '(', 't', "'other", ')', ')']
 ['(', '<', 'x', '10', ')', '"Less than 10"', ')', '(', '(', '=', 'x', '10', ')', '"Equal to 10!"', ')', '(', 't', "'other", ')', ')']
 ['(', '=', 'x', '10', ')', '"Equal to 10!"', ')', '(', 't', "'other", ')', ')']
 ['t', "'other", ')', ')']
@@ -45,3 +44,36 @@ Docstring is: "Computes the nth Fibonacci number using recursion."
     (AtomType.SYMBOL) x
     (AtomType.STRING) 10
   (AtomType.STRING) "Equal to 10!"
+  (AtomType.SYMBOL) 'other
+['(', 'cond', '(', '(', '>', 'x', '10', ')', '"Greater than 10"', ')', '(', '(', '<', 'x', '5', ')', '"Less than 5"', ')', ')']
+['(', '<', 'x', '5', ')', '"Less than 5"', ')', ')']
+[]
+(BuiltIn.COND) cond
+  (AtomType.SYMBOL) >
+    (AtomType.SYMBOL) x
+    (AtomType.STRING) 10
+  (AtomType.STRING) "Greater than 10"
+  (AtomType.SYMBOL) <
+    (AtomType.SYMBOL) x
+    (AtomType.STRING) 5
+  (AtomType.STRING) "Less than 5"
+['(', '+', '10', '(', 'cond', '(', '(', '>', 'x', '10', ')', '5', ')', '(', '(', '<', 'x', '5', ')', '3', ')', '(', '(', '=', 'x', '7', ')', '2', ')', '(', 't', '0', ')', ')', ')']
+['(', '<', 'x', '5', ')', '3', ')', '(', '(', '=', 'x', '7', ')', '2', ')', '(', 't', '0', ')', ')', ')']
+['(', '=', 'x', '7', ')', '2', ')', '(', 't', '0', ')', ')', ')']
+['t', '0', ')', ')', ')']
+(BuiltIn.ADD) +
+  (AtomType.STRING) 10
+  (BuiltIn.COND) cond
+    (AtomType.SYMBOL) >
+      (AtomType.SYMBOL) x
+      (AtomType.STRING) 10
+    (AtomType.STRING) 5
+    (AtomType.SYMBOL) <
+      (AtomType.SYMBOL) x
+      (AtomType.STRING) 5
+    (AtomType.STRING) 3
+    (AtomType.SYMBOL) =
+      (AtomType.SYMBOL) x
+      (AtomType.STRING) 7
+    (AtomType.STRING) 2
+    (AtomType.STRING) 0
