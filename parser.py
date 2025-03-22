@@ -74,7 +74,7 @@ class Node:
 
 class Parser:
     class ParseList(list): 
-        def mpop(self, numPops: int):
+        def mpop(self, numPops: int = 0):
             res = self.pop(0)
             for _ in range(1, numPops):
                 self.pop(0)
@@ -98,7 +98,7 @@ class Parser:
 
     # Create AST given a tokenized expression
     def parse(self) -> Node:
-        nextToken = self.tokenList.mpop(1)
+        nextToken = self.tokenList.mpop()
 
         # Start of new expression
         if nextToken == "(":
@@ -109,7 +109,7 @@ class Parser:
                 return self.parseCond()
             
             # Pop next token as operator
-            nextToken = self.tokenList.pop(0)
+            nextToken = self.tokenList.mpop()
             subExpression = self.tokenToNode(nextToken)
 
             # Recursively process sub-expressions
@@ -117,7 +117,7 @@ class Parser:
                 subExpression.children.append(self.parse())
             
             # Pop closing parentheses
-            self.tokenList.pop(0)
+            self.tokenList.mpop()
             return subExpression
         # Inside expression
         else:
@@ -136,8 +136,7 @@ class Parser:
     
     def parseCond(self) -> Node:
         # Pop off "cond" and "(" 
-        self.tokenList.pop(0)
-        self.tokenList.pop(0)
+        self.tokenList.mpop(2)
         
         print(self.tokenList)
         condNode = Node("cond", BuiltIn.COND)
@@ -148,23 +147,22 @@ class Parser:
             
             condNode.children.append(condition)
             condNode.children.append(result)
-            self.tokenList.pop(0)
-            self.tokenList.pop(0)
+            self.tokenList.mpop(2)
             print(self.tokenList)
 
         return condNode
 
     def parseFn(self) -> Node:
         # Pop next three tokens : [defun, funcName, (]
-        self.tokenList.pop(0)
-        fnName = self.tokenList.pop(0)
-        self.tokenList.pop(0)
+        self.tokenList.mpop()
+        fnName = self.tokenList.mpop()
+        self.tokenList.mpop()
 
         # Pop arguments 
         arguments = []
         while self.tokenList[0] != ")":
-            arguments.append(self.tokenList.pop(0))
-        self.tokenList.pop(0)
+            arguments.append(self.tokenList.mpop())
+        self.tokenList.mpop()
 
         # Pop doc string
         nextToken = self.tokenList[0]
@@ -172,11 +170,11 @@ class Parser:
         if nextToken[0] == "\"" and nextToken[-1] == "\"":
             docstring = nextToken
             print("Docstring is:", nextToken)
-            self.tokenList.pop(0)
+            self.tokenList.mpop()
         
         # Build function node
         newFn = Node("defun", BuiltIn.DEFUN, [fnName, arguments, docstring])
-        self.tokenList.pop(0)
+        self.tokenList.mpop()
         return newFn
 
 if __name__ == "__main__":
