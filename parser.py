@@ -1,6 +1,6 @@
 from typing import List
 from enum import Enum
-import re
+import re, sys
 
 class AtomType(Enum):
     NUMBER = "Number"
@@ -8,6 +8,7 @@ class AtomType(Enum):
     BOOLEAN = "Boolean"
     CHARACTER = "Character"
     SYMBOL = "Symbol"
+    LIST = "List"
     
 class BuiltIn(Enum):
     QUOTE = "Comment"
@@ -63,14 +64,19 @@ class Node:
             self.children = []
         else:
             self.children = children
-    
-    def print_tree(self, level=0):
-        # Print the current node with an indentation based on its level in the tree
-        print('  ' * level + f'({self.type}) {self.val}')
         
-        # Recursively print all the children
+    def __repr__(self):
+        return self.tree_to_string()
+    
+    def tree_to_string(self, level=0):
+        # Initialize an empty string to store the tree representation
+        tree_str = '  ' * level + f'({self.type}) {self.val}\n'
+        
+        # Recursively add all the children to the string
         for child in self.children:
-            child.print_tree(level + 1)
+            tree_str += child.tree_to_string(level + 1)
+        
+        return tree_str
 
 class Parser:
     class ParseList(list): 
@@ -81,43 +87,91 @@ class Parser:
             return res
     
     def __init__(self):
-        self.tokenList = Parser.ParseList([])
+        self.tokenList = []
+        self.parsedExpressions = []
     
-    # Tokenize an expression then convert to AST
-    def runParse(self, expression: str) -> Node:
-        self.tokenize(expression)
+    # Tokenize a string expression then convert to AST
+    def parseString(self, expression: str) -> Node:
+        tokenizedExpression = Parser.ParseList(self.tokenizeString(expression))
+        parsedExpression = self.parseExpression(tokenizedExpression)
+        self.parsedExpressions.append(expression)
+        return parsedExpression
+
+    # Tokenize a file 
+    def parsefile(self, filename: str) -> List[Node]:
+        tokenizedFile = Parser.ParseList(self.tokenizeFile(filename))
         
-        return self.parse()
+        paren = 0
+        tokenizedExpressions = []
+        currentExpression = Parser.ParseList([])
+        # Track paren to know when a new expression begins
+        for token in tokenizedFile:
+            currentExpression.append(token)
+            if token == "(":
+                paren += 1
+            elif token == ")":
+                paren -= 1
+                # Record new expression
+                if paren == 0:
+                    tokenizedExpressions.append(currentExpression)
+                    currentExpression = Parser.ParseList([])
+        
+        # Print the tokenized expressions
+        parsedExpressions = []
+        for expression in tokenizedExpressions:
+            parsedExpression = self.parseExpression(expression)
+            print(parsedExpression)
+        
+        return parsedExpressions
+        
+    TOKEN_REGEX = re.compile(r"""
+        \s+|                      # Whitespace (ignored)
+        ;.*|                      # Comments (ignored)
+        [-+]?\d+(\.\d*)?|         # Numbers (integers and decimals)
+        [()']|                    # Parentheses and quote
+        "[^"]*"|                  # Strings
+        [^\s()'";]+               # Symbols
+        """, re.VERBOSE)
 
+    def tokenizeFile(self, filename):
+        """Generates tokens from a Lisp source file."""
+        with open(filename, "r", encoding="utf-8") as file:
+            for line in file:
+                for match in self.TOKEN_REGEX.finditer(line):
+                    token = match.group().strip()
+                    if not token or token.startswith(";"):  # Ignore whitespace and comments
+                        continue
+                    yield token
+    
     # Turn string expression into a list of tokens
-    def tokenize(self, expression: str):
+    def tokenizeString(self, expression: str) -> List[str]:
         pattern = r'\"[^\"]*\"|\(|\)|[^\s()]+'
-        tokens = Parser.ParseList(re.findall(pattern, expression))
-        print(tokens)
-        self.tokenList = tokens
-
+        expression = expression.replace("'", " (quote ")
+        expression = expression.replace("(", " ( ").replace(")", " ) ")
+        return re.findall(pattern, expression)
+    
     # Create AST given a tokenized expression
-    def parse(self) -> Node:
-        nextToken = self.tokenList.mpop()
+    def parseExpression(self, expression: ParseList) -> Node:
+        nextToken = expression.mpop()
 
         # Start of new expression
         if nextToken == "(":
-            if self.tokenList[0] == "defun":
-                self.parseFn()
+            if expression[0] == "defun":
+                self.parseFn(expression)
 
-            if self.tokenList[0] == "cond":
-                return self.parseCond()
+            if expression[0] == "cond":
+                return self.parseCond(expression)
             
             # Pop next token as operator
-            nextToken = self.tokenList.mpop()
+            nextToken = expression.mpop()
             subExpression = self.tokenToNode(nextToken)
 
             # Recursively process sub-expressions
-            while self.tokenList[0] != ")":
-                subExpression.children.append(self.parse())
+            while expression[0] != ")":
+                subExpression.children.append(self.parseExpression(expression))
             
             # Pop closing parentheses
-            self.tokenList.mpop()
+            expression.mpop()
             return subExpression
         # Inside expression
         else:
@@ -134,69 +188,77 @@ class Parser:
             return Node(int(nextToken), AtomType.STRING)
         return Node(nextToken, AtomType.SYMBOL)
     
-    def parseCond(self) -> Node:
+    def parseCond(self, expression: ParseList) -> Node:
         # Pop off "cond" and "(" 
-        self.tokenList.mpop(2)
+        expression.mpop(2)
         
         # Recursively append condition : result pairs to children
         condNode = Node("cond", BuiltIn.COND) 
-        while self.tokenList and self.tokenList[0] != "t":
-            condNode.children.append(self.parse())
-            condNode.children.append(self.parse())
+        while expression and expression[0] != "t":
+            condNode.children.append(self.parseExpression(expression))
+            condNode.children.append(self.parseExpression(expression))
             
             # Pop off the ')' '(' and enter next condition 
-            self.tokenList.mpop(2)
-            print(self.tokenList)
+            expression.mpop(2)
         
         # Append else condition
-        if self.tokenList and self.tokenList[0] == "t":
+        if expression and expression[0] == "t":
             # Pop off 't' and append else result
-            self.tokenList.mpop()
-            condNode.children.append(self.parse())
+            expression.mpop()
+            condNode.children.append(self.parseExpression(expression))
 
         return condNode
 
-    def parseFn(self) -> Node:
+    def parseFn(self, expression: ParseList) -> Node:
         # Pop next three tokens : [defun, funcName, (]
-        self.tokenList.mpop()
-        fnName = self.tokenList.mpop()
-        self.tokenList.mpop()
+        expression.mpop()
+        fnName = expression.mpop()
+        expression.mpop()
 
         # Pop arguments 
         arguments = []
-        while self.tokenList[0] != ")":
-            arguments.append(self.tokenList.mpop())
-        self.tokenList.mpop()
+        while expression[0] != ")":
+            arguments.append(expression.mpop())
+        expression.mpop()
 
         # Pop doc string
-        nextToken = self.tokenList[0]
+        nextToken = expression[0]
         docstring = ""
         if nextToken[0] == "\"" and nextToken[-1] == "\"":
             docstring = nextToken
             print("Docstring is:", nextToken)
-            self.tokenList.mpop()
+            expression.mpop()
         
         # Build function node
         newFn = Node("defun", BuiltIn.DEFUN, [fnName, arguments, docstring])
-        self.tokenList.mpop()
-        return newFn
-
-if __name__ == "__main__":
+        expression.mpop()
+        return newFn    
+    
+def testParseString():
     myParser = Parser()
-    ast = myParser.runParse("(defun factorial (n) \"Computes the factorial of a number recursively.\" (if (<= n 1) 1 (* n (factorial (- n 1)))))")
+    ast = myParser.parseString("(defun factorial (n) \"Computes the factorial of a number recursively.\" (if (<= n 1) 1 (* n (factorial (- n 1)))))")
     ast.print_tree()
 
-    ast = myParser.runParse("(defun fibonacci (n) \"Computes the nth Fibonacci number using recursion.\" (if (<= n 1) n (+ (fibonacci (- n 1)) (fibonacci (- n 2)))))")
+    ast = myParser.parseString("(defun fibonacci (n) \"Computes the nth Fibonacci number using recursion.\" (if (<= n 1) n (+ (fibonacci (- n 1)) (fibonacci (- n 2)))))")
     ast.print_tree()
     
-    # ast = myParser.runParse("(defun filter (pred lst) \"Filters a list based on a predicate function.\" (cond ((null lst) '()) ((funcall pred (car lst)) (cons (car lst) (filter pred (cdr lst)))) (t (filter pred (cdr lst)))))")
+    # ast = myParser.runParseString("(defun filter (pred lst) \"Filters a list based on a predicate function.\" (cond ((null lst) '()) ((funcall pred (car lst)) (cons (car lst) (filter pred (cdr lst)))) (t (filter pred (cdr lst)))))")
     # ast.print_tree()
     
-    ast = myParser.runParse("(cond ((> x 10) \"Greater than 10\") ((< x 10) \"Less than 10\") ((= x 10) \"Equal to 10!\") (t 'other))")
+    ast = myParser.parseString("(cond ((> x 10) \"Greater than 10\") ((< x 10) \"Less than 10\") ((= x 10) \"Equal to 10!\") (t 'other))")
     ast.print_tree()
-    
-    ast = myParser.runParse("(cond ((> x 10) \"Greater than 10\") ((< x 5) \"Less than 5\"))")
-    ast.print_tree()
-    
-    ast = myParser.runParse("(+ 10 (cond ((> x 10) 5) ((< x 5) 3) ((= x 7) 2) (t 0)))")
-    ast.print_tree()
+
+def testParseFile(filename: str):
+    myParser = Parser()
+    myParser.parsefile(filename)
+
+if __name__ == "__main__":
+    if "--file" in sys.argv:
+        print("Parsing file...")
+        fileIndex = sys.argv.index('--file')
+        if fileIndex + 1 < len(sys.argv):
+            filename = sys.argv[fileIndex + 1]
+            testParseFile(filename)
+    else:
+        print("No file, parsing default...")
+        testParseString()

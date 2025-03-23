@@ -1,0 +1,14 @@
+;; Function for calculating the factorial of n
+(defun factorial (n)
+  "Computes the factorial of a number recursively."
+  (if (<= n 1)
+      1
+      ;; descend recursively
+      (* n (factorial (- n 1)))))
+
+;; Function for calculating the nth fibbonacci number
+(defun fibonacci (n)
+  "Computes the nth Fibonacci number using recursion."
+  (if (<= n 1)
+      n
+      (+ (fibonacci (- n 1)) (fibonacci (- n 2)))))
