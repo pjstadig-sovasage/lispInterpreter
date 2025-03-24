@@ -1,29 +1,37 @@
 Parsing file...
 [['(', 'defun', 'factorial', '(', 'n', ')', '"Computes the factorial of a number recursively."', '(', 'if', '(', '<=', 'n', '1', ')', '1', '(', '*', 'n', '(', 'factorial', '(', '-', 'n', '1', ')', ')', ')', ')', ')'], ['(', 'defun', 'fibonacci', '(', 'n', ')', '"Computes the nth Fibonacci number using recursion."', '(', 'if', '(', '<=', 'n', '1', ')', 'n', '(', '+', '(', 'fibonacci', '(', '-', 'n', '1', ')', ')', '(', 'fibonacci', '(', '-', 'n', '2', ')', ')', ')', ')', ')']]
-Docstring is: "Computes the factorial of a number recursively."
-Docstring is: "Computes the nth Fibonacci number using recursion."
-(BuiltIn.IF) if
-  (BuiltIn.LEQ) <=
-    (AtomType.SYMBOL) n
+['factorial', '(', 'n', ')', '"Computes the factorial of a number recursively."', '(', 'if', '(', '<=', 'n', '1', ')', '1', '(', '*', 'n', '(', 'factorial', '(', '-', 'n', '1', ')', ')', ')', ')', ')']
+['fibonacci', '(', 'n', ')', '"Computes the nth Fibonacci number using recursion."', '(', 'if', '(', '<=', 'n', '1', ')', 'n', '(', '+', '(', 'fibonacci', '(', '-', 'n', '1', ')', ')', '(', 'fibonacci', '(', '-', 'n', '2', ')', ')', ')', ')', ')']
+(BuiltIn.DEFUN) defun
+  (AtomType.SYMBOL) factorial
+  (AtomType.LIST) ['n']
+  (AtomType.STRING) "Computes the factorial of a number recursively."
+  (BuiltIn.IF) if
+    (BuiltIn.LEQ) <=
+      (AtomType.SYMBOL) n
+      (AtomType.STRING) 1
     (AtomType.STRING) 1
-  (AtomType.STRING) 1
-  (BuiltIn.MULT) *
+    (BuiltIn.MULT) *
+      (AtomType.SYMBOL) n
+      (AtomType.SYMBOL) factorial
+        (BuiltIn.SUB) -
+          (AtomType.SYMBOL) n
+          (AtomType.STRING) 1
+(BuiltIn.DEFUN) defun
+  (AtomType.SYMBOL) fibonacci
+  (AtomType.LIST) ['n']
+  (AtomType.STRING) "Computes the nth Fibonacci number using recursion."
+  (BuiltIn.IF) if
+    (BuiltIn.LEQ) <=
+      (AtomType.SYMBOL) n
+      (AtomType.STRING) 1
     (AtomType.SYMBOL) n
-    (AtomType.SYMBOL) factorial
-      (BuiltIn.SUB) -
-        (AtomType.SYMBOL) n
-        (AtomType.STRING) 1
-(BuiltIn.IF) if
-  (BuiltIn.LEQ) <=
-    (AtomType.SYMBOL) n
-    (AtomType.STRING) 1
-  (AtomType.SYMBOL) n
-  (BuiltIn.ADD) +
-    (AtomType.SYMBOL) fibonacci
-      (BuiltIn.SUB) -
-        (AtomType.SYMBOL) n
-        (AtomType.STRING) 1
-    (AtomType.SYMBOL) fibonacci
-      (BuiltIn.SUB) -
-        (AtomType.SYMBOL) n
-        (AtomType.STRING) 2
+    (BuiltIn.ADD) +
+      (AtomType.SYMBOL) fibonacci
+        (BuiltIn.SUB) -
+          (AtomType.SYMBOL) n
+          (AtomType.STRING) 1
+      (AtomType.SYMBOL) fibonacci
+        (BuiltIn.SUB) -
+          (AtomType.SYMBOL) n
+          (AtomType.STRING) 2

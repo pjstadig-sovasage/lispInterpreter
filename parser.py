@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict, Callable
 from tokens import AtomType, BuiltIn, reservedSymbols
 from node import Node
 import re
@@ -14,6 +14,11 @@ class Parser:
     def __init__(self):
         self.tokenList = []
         self.parsedExpressions = []
+        
+        self.specialForms: Dict[str, Callable[[Parser.ParseList], Node]]= {
+            "defun": self.parseFn,
+            "cond": self.parseCond
+        }
 
     # Parse a list of expressions
     def parseExpressionList(self, tokenizedExpressions: List[List[str]]) -> List[Node]:        
@@ -34,23 +39,19 @@ class Parser:
 
         # Start of new expression
         if nextToken == "(":
-            if expression[0] == "defun":
-                self.parseFn(expression)
-
-            if expression[0] == "cond":
-                return self.parseCond(expression)
-            
-            # Pop next token as operator
-            nextToken = expression.mpop()
-            subExpression = self.tokenToNode(nextToken)
+            # Pop next token as operator, check for special form
+            operator = expression.mpop()
+            if operator in self.specialForms:
+                return self.specialForms[operator](expression)
+            operator = self.tokenToNode(operator)
 
             # Recursively process sub-expressions
             while expression[0] != ")":
-                subExpression.children.append(self.parse(expression))
+                operator.children.append(self.parse(expression))
             
             # Pop closing parentheses
             expression.mpop()
-            return subExpression
+            return operator
         # Inside expression
         else:
             return self.tokenToNode(nextToken)
@@ -66,7 +67,7 @@ class Parser:
             return Node(int(nextToken), AtomType.STRING)
         return Node(nextToken, AtomType.SYMBOL)
     
-    # Parse the "cond" special form
+    # Parse the conditional special form
     def parseCond(self, expression: ParseList) -> Node:
         # Pop off "cond" and "(" 
         expression.mpop(2)
@@ -88,28 +89,30 @@ class Parser:
 
         return condNode
 
-    # Parse the "function" form
+    # Parse the function special form
     def parseFn(self, expression: ParseList) -> Node:
-        # Pop next three tokens : [defun, funcName, (]
-        expression.mpop()
-        fnName = expression.mpop()
+        # Pop next func name and opening paren: [funcName, (]
+        print(expression)
+        fnName = Node(expression.mpop(), AtomType.SYMBOL) 
         expression.mpop()
 
         # Pop arguments 
         arguments = []
         while expression[0] != ")":
             arguments.append(expression.mpop())
+        arguments = Node(arguments, AtomType.LIST)
         expression.mpop()
 
         # Pop doc string
         nextToken = expression[0]
-        docstring = ""
         if nextToken[0] == "\"" and nextToken[-1] == "\"":
-            docstring = nextToken
-            print("Docstring is:", nextToken)
+            docstring = Node(nextToken, AtomType.STRING)
             expression.mpop()
         
+        # Parse the function definition
+        fndef = self.parse(expression)
+        
         # Build function node
-        newFn = Node("defun", BuiltIn.DEFUN, [fnName, arguments, docstring])
-        expression.mpop()
+        newFn = Node("defun", BuiltIn.DEFUN, [fnName, arguments, docstring, fndef])
+        
         return newFn    
