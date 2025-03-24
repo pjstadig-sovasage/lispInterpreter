@@ -1,3 +1,5 @@
+from typing import List
+
 class Function:
     def __init__(self, name: str, docstring: str, arguments: List[str]):
         self.name = name
