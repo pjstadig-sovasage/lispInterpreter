@@ -40,10 +40,16 @@ class Lexer:
 
         return tokenizedExpressions
         
-    
     # Turn string expression into a list of tokens
-    def tokenizeString(self, expression: str) -> List[str]:
-        pattern = r'\"[^\"]*\"|\(|\)|[^\s()]+'
+    def tokenizeString(self, expression: str):
         expression = expression.replace("'", " (quote ")
         expression = expression.replace("(", " ( ").replace(")", " ) ")
-        return re.findall(pattern, expression)
+
+        tokenizedExpression = []
+        for match in self.TOKEN_REGEX.finditer(expression):
+            token = match.group().strip()
+            if not token:
+                continue
+            tokenizedExpression.append(token)
+            
+        return tokenizedExpression

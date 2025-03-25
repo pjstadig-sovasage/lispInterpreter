@@ -21,8 +21,7 @@ class Parser:
         }
 
     # Parse a list of expressions
-    def parseExpressionList(self, tokenizedExpressions: List[List[str]]) -> List[Node]:        
-        # Print the tokenized expressions
+    def parseExpressionList(self, tokenizedExpressions: List[List[str]]) -> List[Node]:
         parsedExpressions = []
         for expression in tokenizedExpressions:
             parsedExpressions.append(self.parseExpression(expression))
@@ -43,6 +42,8 @@ class Parser:
             operator = expression.mpop()
             if operator in self.specialForms:
                 return self.specialForms[operator](expression)
+            
+            # Handle standard ops
             operator = self.tokenToNode(operator)
 
             # Recursively process sub-expressions
@@ -69,14 +70,17 @@ class Parser:
     
     # Parse the conditional special form
     def parseCond(self, expression: ParseList) -> Node:
-        # Pop off "cond" and "(" 
-        expression.mpop(2)
+        # Pop off "cond"
+        expression.mpop()
         
         # Recursively append condition : result pairs to children
         condNode = Node("cond", BuiltIn.COND) 
         while expression and expression[0] != "t":
-            condNode.children.append(self.parse(expression))
-            condNode.children.append(self.parse(expression))
+            condition = self.parse(expression)
+            result = self.parse(expression)
+            
+            condNode.children.append(condition) 
+            condNode.children.append(result) 
             
             # Pop off the ')' '(' and enter next condition 
             expression.mpop(2)
@@ -92,7 +96,6 @@ class Parser:
     # Parse the function special form
     def parseFn(self, expression: ParseList) -> Node:
         # Pop next func name and opening paren: [funcName, (]
-        print(expression)
         fnName = Node(expression.mpop(), AtomType.SYMBOL) 
         expression.mpop()
 
@@ -105,11 +108,12 @@ class Parser:
 
         # Pop doc string
         nextToken = expression[0]
+        docstring = Node("", AtomType.STRING)
         if nextToken[0] == "\"" and nextToken[-1] == "\"":
             docstring = Node(nextToken, AtomType.STRING)
             expression.mpop()
         
-        # Parse the function definition
+        # Parse the rest of the function
         fndef = self.parse(expression)
         
         # Build function node
