@@ -59,13 +59,13 @@ class Parser:
         
     # Given a token, return a node representing it
     def tokenToNode(self, nextToken) -> Node:
-        numberPattern = r'^-?\d+(\.\d+)?$'
+        numberPattern = r'[-+]?\d+(\.\d*)?'
         if nextToken in reservedSymbols:
             return Node(nextToken, reservedSymbols[nextToken])
         elif nextToken[0] == "\"" and nextToken[-1] == "\"":
             return Node(nextToken, AtomType.STRING)
         elif re.fullmatch(numberPattern, nextToken):
-            return Node(int(nextToken), AtomType.STRING)
+            return Node(int(nextToken), AtomType.NUMBER)
         return Node(nextToken, AtomType.SYMBOL)
     
     # Parse the conditional special form

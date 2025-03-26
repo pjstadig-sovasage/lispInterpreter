@@ -6,14 +6,14 @@
   (BuiltIn.IF) if
     (BuiltIn.LEQ) <=
       (AtomType.SYMBOL) n
-      (AtomType.STRING) 1
-    (AtomType.STRING) 1
+      (AtomType.NUMBER) 1
+    (AtomType.NUMBER) 1
     (BuiltIn.MULT) *
       (AtomType.SYMBOL) n
       (AtomType.SYMBOL) factorial
         (BuiltIn.SUB) -
           (AtomType.SYMBOL) n
-          (AtomType.STRING) 1
+          (AtomType.NUMBER) 1
 
 ['(', 'defun', 'fibonacci', '(', 'n', ')', '"Computes the nth Fibonacci number using recursion."', '(', 'if', '(', '<=', 'n', '1', ')', 'n', '(', '+', '(', 'fibonacci', '(', '-', 'n', '1', ')', ')', '(', 'fibonacci', '(', '-', 'n', '2', ')', ')', ')', ')', ')']
 (BuiltIn.DEFUN) defun
@@ -23,15 +23,15 @@
   (BuiltIn.IF) if
     (BuiltIn.LEQ) <=
       (AtomType.SYMBOL) n
-      (AtomType.STRING) 1
+      (AtomType.NUMBER) 1
     (AtomType.SYMBOL) n
     (BuiltIn.ADD) +
       (AtomType.SYMBOL) fibonacci
         (BuiltIn.SUB) -
           (AtomType.SYMBOL) n
-          (AtomType.STRING) 1
+          (AtomType.NUMBER) 1
       (AtomType.SYMBOL) fibonacci
         (BuiltIn.SUB) -
           (AtomType.SYMBOL) n
-          (AtomType.STRING) 2
+          (AtomType.NUMBER) 2
 
