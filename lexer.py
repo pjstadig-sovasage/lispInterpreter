@@ -6,7 +6,7 @@ class Lexer:
         \s+|                      # Whitespace (ignored)
         ;.*|                      # Comments (ignored)
         [-+]?\d+(\.\d*)?|         # Numbers (integers and decimals)
-        [()']|                    # Parentheses and quote
+        [()',]|                   # Parentheses and quote
         "[^"]*"|                  # Strings
         [^\s()'";]+               # Symbols
         """, re.VERBOSE)

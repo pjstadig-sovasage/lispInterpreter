@@ -19,6 +19,8 @@ class BuiltIn(Enum):
     LAMBDA = "Anonymous function"
     DEFUN = "Define function"
     DEFMACRO = "Define MACRO"
+    QUASIQUOTE = "Define quasiquote"
+    UNQUOTE = "Evaluate inside quasiquote"
     
     ADD = "+"
     SUB = "-"

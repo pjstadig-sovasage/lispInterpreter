@@ -1,0 +1,17 @@
+;; Basic LISP macros to test parser
+
+;; Define a simple macro to add two numbers
+(defmacro add-two-numbers (x y)
+  `(+ ,x ,y))
+
+;; Define a macro to calculate the factorial of a number
+(defmacro factorial (n)
+  `(if (<= ,n 1)
+       1
+       (* ,n (factorial (- ,n 1)))))
+
+;; A macro for conditional expressions (if-else)
+(defmacro my-if (test then else)
+  `(if ,test
+       ,then
+       ,else))

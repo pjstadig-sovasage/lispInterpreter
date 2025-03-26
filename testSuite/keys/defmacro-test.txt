@@ -1,0 +1,12 @@
+['(', 'defmacro', 'make-add', '(', 'x', 'y', ')', '`', '(', ',', '+', ',', 'x', ',', 'y', ')', ')']
+(BuiltIn.DEFMACRO) defmacro
+  (AtomType.SYMBOL) make-add
+  (AtomType.LIST) ['x', 'y']
+  (AtomType.STRING) 
+  (BuiltIn.QUASIQUOTE) quasi-quote
+    (BuiltIn.UNQUOTE) unquote
+      (BuiltIn.ADD) +
+    (BuiltIn.UNQUOTE) unquote
+      (AtomType.SYMBOL) x
+    (BuiltIn.UNQUOTE) unquote
+      (AtomType.SYMBOL) y

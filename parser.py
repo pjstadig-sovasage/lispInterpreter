@@ -15,12 +15,18 @@ class Parser:
         self.tokenList = []
         self.parsedExpressions = []
         
-        self.specialForms: Dict[str, Callable[[Parser.ParseList], Node]]= {
-            "defun": self.parseFn,
-            "cond": self.parseCond,
-            "quote": self.parseQuote,
-            "'" : self.parseQuote
-        }
+        self.specialForms: Dict[str, Callable[[Parser.ParseList], Node]] = {
+            "defun" : self.parseFn,
+            "defmacro" : self.parseFn,
+            
+            "cond" : self.parseCond,
+            "do" : self.parseDo,
+            
+            "quote" : self.parseQuote,
+            "'" : self.parseQuote,
+            "`" : self.parseQuasiQuote,
+            "," : self.parseUnquote
+        } 
 
     # Parse a list of expressions
     def parseExpressionList(self, tokenizedExpressions: List[List[str]]) -> List[Node]:
@@ -96,7 +102,7 @@ class Parser:
 
         return condNode
 
-    # Parse the function special form
+    # Parse the defun special form
     def parseFn(self, expression: ParseList) -> Node:
         # Pop next func name and opening paren: [funcName, (]
         fnName = Node(expression.mpop(), AtomType.SYMBOL) 
@@ -124,8 +130,37 @@ class Parser:
         
         return newFn    
     
-    # Parse the quote special form 
+    # Parse the quote special form:
+    # (quote (var1 var2 ...))
+    # '(var1 var2)
+    # 'var1
     def parseQuote(self, expression: ParseList) -> Node:
         quote = Node("quote", BuiltIn.QUOTE, [self.parse(expression)])
         
         return quote
+
+    def parseQuasiQuote(self, expression: ParseList) -> Node:
+        quasiQuote = Node("quasi-quote", BuiltIn.QUASIQUOTE)
+        
+        while expression[0] != ")":
+            quasiQuote.children.append(self.parse(expression))
+
+        return quasiQuote
+    
+    def parseUnquote(self, expression: ParseList) -> Node:
+        unquote = Node("unquote", BuiltIn.UNQUOTE, [self.parse(expression)])
+
+        return unquote
+    
+    
+    # Parse the do special form:
+    # (do ((var1 init1 step1) 
+    #      (var2 init2 step2) 
+    #      (...)
+    #      (end-condition *result)
+    #  (body)
+    #  (body2)
+    #  (...))
+    # *returning a "result" is optional 
+    def parseDo(self, expression: ParseList) -> Node:
+        print(expression)
