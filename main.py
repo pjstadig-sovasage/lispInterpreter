@@ -10,12 +10,14 @@ if __name__ == "__main__":
         fileIndex = sys.argv.index('--file')
         if fileIndex + 1 < len(sys.argv):
             filename = sys.argv[fileIndex + 1]
-            Controller.runFileParse(filename)
+            print(f"filepath: {filename}")
+            controller.runFile(filename)
     elif "--repl" in sys.argv:
         print("Entering REPL mode")
-        Controller.runREPL()
+        controller.runREPL()
     elif "--test" in sys.argv:
         print("Running test suite")
+        controller.runTests()
     else:
         print("No mode entered, starting in REPL")
-        Controller.runREPL()
+        controller.runREPL()

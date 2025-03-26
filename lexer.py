@@ -13,6 +13,7 @@ class Lexer:
     
     def tokenizeFile(self, filename):
         """Generates tokens from a Lisp source file."""
+        print(filename)
         with open(filename, "r", encoding="utf-8") as file:
             for line in file:
                 for match in self.TOKEN_REGEX.finditer(line):

@@ -1,5 +1,6 @@
 from lexer import Lexer
 from parser import Parser
+import os
 
 class Controller:
     def __init__(self):
@@ -7,8 +8,7 @@ class Controller:
         self.parser = Parser()
     
     # Evaluate command line input line by line
-    def runREPL():
-        lexer, parser = Lexer(), Parser()
+    def runREPL(self):
         running = True
         
         print("Enter LISP expressions one-by-one for evaluation. Type q to exit.")
@@ -19,20 +19,27 @@ class Controller:
                     print("Exiting LISP Interpreter")
                     running = False
                 else:
-                    tokenizedString = list(lexer.tokenizeString(user_input))
+                    tokenizedString = list(self.lexer.tokenizeString(user_input))
                     print(f"Tokenized expression: {tokenizedString}")
-                    ast = parser.parseExpression(tokenizedString)
+                    ast = self.parser.parseExpression(tokenizedString)
                     print("AST:"), ast.print_tree()
             except Exception as e:
                 print(f"Error encountered: {e}")
 
-    # Evaluate full file
-    def runFileParse(filename: str):
-        lexer, parser = Lexer(), Parser()
-        tokenizedFile = lexer.tokenizeFile(filename)
-        tokenizedExpressions = lexer.chunkFile(tokenizedFile)
-        print(tokenizedExpressions)
-        parsedExpressions = parser.parseExpressionList(tokenizedExpressions)
+    # Evaluate full file and output a log file
+    def runFile(self, filename: str, print=True):
+        tokenizedFile = self.lexer.tokenizeFile(filename)
+        tokenizedExpressions = self.lexer.chunkFile(tokenizedFile)
+        parsedExpressions = self.parser.parseExpressionList(tokenizedExpressions)
         
-        for expression in parsedExpressions:
-            expression.print_tree()
+        # Print to console
+        if print:
+            for i in range(0, len(tokenizedExpressions)):
+                print(tokenizedExpressions[i])
+                print(parsedExpressions[i])
+            
+        # Output log
+        with open(filename.replace("tests", "results"), 'w') as outFile:
+            for i in range(0, len(tokenizedExpressions)):
+                outFile.write(str(tokenizedExpressions[i]) + '\n')
+                outFile.write(parsedExpressions[i].astString() + '\n')

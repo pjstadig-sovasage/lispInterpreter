@@ -9,10 +9,18 @@ class Node:
         else:
             self.children = children
     
-    def print_tree(self, level=0):
-        # Print the current node with an indentation based on its level in the tree
-        print('  ' * level + f'({self.type}) {self.val}')
+    def __repr__(self):
+        return self.astString()
+    
+    def build_tree(self, level=0):
+        return '  ' * level + f'({self.type}) {self.val}'
+       
+    def astString(self, level=0) -> str:
+        # Initialize the result string with the current node
+        result = '  ' * level + f'({self.type}) {self.val}\n'
         
-        # Recursively print all the children
+        # Recursively add the children to the result string
         for child in self.children:
-            child.print_tree(level + 1)
+            result += child.astString(level + 1)
+        
+        return result
