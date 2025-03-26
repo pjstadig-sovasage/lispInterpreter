@@ -15,17 +15,17 @@ class Parser:
         self.tokenList = []
         self.parsedExpressions = []
         
-        self.specialForms: Dict[str, Callable[[Parser.ParseList], Node]] = {
-            "defun" : self.parseFn,
-            "defmacro" : self.parseFn,
+        self.SPECIAL_FORMS: Dict[str, Callable[[Parser.ParseList, str], Node]] = {
+            "defun" : [self.parseFn, "defun"],
+            "defmacro" : [self.parseFn, "defmacro"],
             
-            "cond" : self.parseCond,
-            "do" : self.parseDo,
+            "cond" : [self.parseCond, "cond"],
+            "do" : [self.parseDo, "do"],
             
-            "quote" : self.parseQuote,
-            "'" : self.parseQuote,
-            "`" : self.parseQuasiQuote,
-            "," : self.parseUnquote
+            "quote" : [self.parseQuote, "quote"],
+            "'" : [self.parseQuote, "quote"],
+            "`" : [self.parseQuasiQuote, "quasi-quote"],
+            "," : [self.parseQuote, "unquote"]
         } 
 
     # Parse a list of expressions
@@ -46,10 +46,10 @@ class Parser:
         
         # Start of new expression
         if nextToken == "(":
-            # Pop operator and check if special
+            # Check if operator is special form
             operator = expression.mpop()
-            if operator in self.specialForms:
-                return self.specialForms[operator](expression)
+            if operator in self.SPECIAL_FORMS:
+                return self.handleSpecialForm(expression, operator)
             operator = self.tokenToNode(operator)
 
             # Recursively process arguments
@@ -60,11 +60,16 @@ class Parser:
             expression.mpop()
             return operator
         # Check for special form
-        elif nextToken in self.specialForms:
-            return self.specialForms[nextToken](expression)
+        elif nextToken in self.SPECIAL_FORMS:
+            return self.handleSpecialForm(expression, nextToken)
         # Inside expression
         else:
             return self.tokenToNode(nextToken)
+    
+    def handleSpecialForm(self, expression: ParseList, type: str) -> Node:
+        specialForm = self.SPECIAL_FORMS[type]
+        return specialForm[0](expression, specialForm[1])
+        
         
     # Given a token, return a node representing it
     def tokenToNode(self, nextToken) -> Node:
@@ -78,7 +83,7 @@ class Parser:
         return Node(nextToken, AtomType.SYMBOL)
     
     # Parse the conditional special form
-    def parseCond(self, expression: ParseList) -> Node:
+    def parseCond(self, expression: ParseList, name: str) -> Node:
         # Pop off "cond"
         expression.mpop()
         
@@ -103,7 +108,7 @@ class Parser:
         return condNode
 
     # Parse the defun special form
-    def parseFn(self, expression: ParseList) -> Node:
+    def parseFn(self, expression: ParseList, name: str) -> Node:
         # Pop next func name and opening paren: [funcName, (]
         fnName = Node(expression.mpop(), AtomType.SYMBOL) 
         expression.mpop()
@@ -130,28 +135,22 @@ class Parser:
         
         return newFn    
     
-    # Parse the quote special form:
+    # Parse the quote-like forms:
     # (quote (var1 var2 ...))
     # '(var1 var2)
     # 'var1
-    def parseQuote(self, expression: ParseList) -> Node:
-        quote = Node("quote", BuiltIn.QUOTE, [self.parse(expression)])
+    def parseQuote(self, expression: ParseList, name: str) -> Node:
+        quote = Node(name, BuiltIn.QUOTE, [self.parse(expression)])
         
         return quote
 
-    def parseQuasiQuote(self, expression: ParseList) -> Node:
+    def parseQuasiQuote(self, expression: ParseList, name: str) -> Node:
         quasiQuote = Node("quasi-quote", BuiltIn.QUASIQUOTE)
         
         while expression[0] != ")":
             quasiQuote.children.append(self.parse(expression))
 
         return quasiQuote
-    
-    def parseUnquote(self, expression: ParseList) -> Node:
-        unquote = Node("unquote", BuiltIn.UNQUOTE, [self.parse(expression)])
-
-        return unquote
-    
     
     # Parse the do special form:
     # (do ((var1 init1 step1) 
@@ -162,5 +161,5 @@ class Parser:
     #  (body2)
     #  (...))
     # *returning a "result" is optional 
-    def parseDo(self, expression: ParseList) -> Node:
+    def parseDo(self, expression: ParseList, name: str) -> Node:
         print(expression)

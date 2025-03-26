@@ -5,9 +5,9 @@
   (AtomType.STRING) 
   (BuiltIn.QUASIQUOTE) quasi-quote
     (BuiltIn.ADD) +
-      (BuiltIn.UNQUOTE) unquote
+      (BuiltIn.QUOTE) unquote
         (AtomType.SYMBOL) x
-      (BuiltIn.UNQUOTE) unquote
+      (BuiltIn.QUOTE) unquote
         (AtomType.SYMBOL) y
 
 ['(', 'defmacro', 'factorial', '(', 'n', ')', '`', '(', 'if', '(', '<=', ',', 'n', '1', ')', '1', '(', '*', ',', 'n', '(', 'factorial', '(', '-', ',', 'n', '1', ')', ')', ')', ')', ')']
@@ -18,16 +18,16 @@
   (BuiltIn.QUASIQUOTE) quasi-quote
     (BuiltIn.IF) if
       (BuiltIn.LEQ) <=
-        (BuiltIn.UNQUOTE) unquote
+        (BuiltIn.QUOTE) unquote
           (AtomType.SYMBOL) n
         (AtomType.NUMBER) 1
       (AtomType.NUMBER) 1
       (BuiltIn.MULT) *
-        (BuiltIn.UNQUOTE) unquote
+        (BuiltIn.QUOTE) unquote
           (AtomType.SYMBOL) n
         (AtomType.SYMBOL) factorial
           (BuiltIn.SUB) -
-            (BuiltIn.UNQUOTE) unquote
+            (BuiltIn.QUOTE) unquote
               (AtomType.SYMBOL) n
             (AtomType.NUMBER) 1
 
@@ -38,10 +38,10 @@
   (AtomType.STRING) 
   (BuiltIn.QUASIQUOTE) quasi-quote
     (BuiltIn.IF) if
-      (BuiltIn.UNQUOTE) unquote
+      (BuiltIn.QUOTE) unquote
         (AtomType.SYMBOL) test
-      (BuiltIn.UNQUOTE) unquote
+      (BuiltIn.QUOTE) unquote
         (AtomType.SYMBOL) then
-      (BuiltIn.UNQUOTE) unquote
+      (BuiltIn.QUOTE) unquote
         (AtomType.SYMBOL) else
 
