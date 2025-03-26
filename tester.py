@@ -1,8 +1,6 @@
 import unittest
 import glob 
 import os
-import io
-import sys
 from controller import Controller
 
 class TestREPL(unittest.TestCase):    
@@ -26,7 +24,7 @@ class TestREPL(unittest.TestCase):
                 with open(keyFile, 'r', encoding='utf-8') as file:
                     expectedOutput = file.read().strip()
                     
-                controller.runFile(test, False)
+                controller.runFile(os.path.normpath(test), False)
                 
                 with open(resFile, 'r', encoding='utf-8') as file:
                     actualOutput = file.read().strip()

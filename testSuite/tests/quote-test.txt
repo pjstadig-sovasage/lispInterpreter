@@ -1,0 +1,11 @@
+;; Define a list with symbols and a number
+(setq my-list '(a b c 42))
+
+;; Using quote to prevent evaluation of a list
+(setq quoted-list (quote (x y z)))
+
+;; Using quote to prevent evaluation of an atom
+(setq quoted-symbol (quote symbol))
+
+;; Using quote with a function call
+(setq quoted-function (quote (lambda (x) (* x x))))

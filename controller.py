@@ -1,6 +1,5 @@
 from lexer import Lexer
 from parser import Parser
-import os
 
 class Controller:
     def __init__(self):
@@ -26,14 +25,14 @@ class Controller:
             except Exception as e:
                 print(f"Error encountered: {e}")
 
-    # Evaluate full file and output a log file
-    def runFile(self, filename: str, print=True):
-        tokenizedFile = self.lexer.tokenizeFile(filename)
+    # Evaluate full file and output to log
+    def runFile(self, filename: str, printConsole=True):
+        tokenizedFile = list(self.lexer.tokenizeFile(filename))
         tokenizedExpressions = self.lexer.chunkFile(tokenizedFile)
         parsedExpressions = self.parser.parseExpressionList(tokenizedExpressions)
         
         # Print to console
-        if print:
+        if printConsole:
             for i in range(0, len(tokenizedExpressions)):
                 print(tokenizedExpressions[i])
                 print(parsedExpressions[i])

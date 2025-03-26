@@ -17,7 +17,9 @@ class Parser:
         
         self.specialForms: Dict[str, Callable[[Parser.ParseList], Node]]= {
             "defun": self.parseFn,
-            "cond": self.parseCond
+            "cond": self.parseCond,
+            "quote": self.parseQuote,
+            "'" : self.parseQuote
         }
 
     # Parse a list of expressions
@@ -35,24 +37,25 @@ class Parser:
     # Create AST given a tokenized expression
     def parse(self, expression: ParseList) -> Node:
         nextToken = expression.mpop()
-
+        
         # Start of new expression
         if nextToken == "(":
-            # Pop next token as operator, check for special form
+            # Pop operator and check if special
             operator = expression.mpop()
             if operator in self.specialForms:
                 return self.specialForms[operator](expression)
-            
-            # Handle standard ops
             operator = self.tokenToNode(operator)
 
-            # Recursively process sub-expressions
+            # Recursively process arguments
             while expression[0] != ")":
                 operator.children.append(self.parse(expression))
             
             # Pop closing parentheses
             expression.mpop()
             return operator
+        # Check for special form
+        elif nextToken in self.specialForms:
+            return self.specialForms[nextToken](expression)
         # Inside expression
         else:
             return self.tokenToNode(nextToken)
@@ -120,3 +123,9 @@ class Parser:
         newFn = Node("defun", BuiltIn.DEFUN, [fnName, arguments, docstring, fndef])
         
         return newFn    
+    
+    # Parse the quote special form 
+    def parseQuote(self, expression: ParseList) -> Node:
+        quote = Node("quote", BuiltIn.QUOTE, [self.parse(expression)])
+        
+        return quote

@@ -13,9 +13,9 @@ class Lexer:
     
     def tokenizeFile(self, filename):
         """Generates tokens from a Lisp source file."""
-        print(filename)
         with open(filename, "r", encoding="utf-8") as file:
             for line in file:
+                # Transform quote special form to function
                 for match in self.TOKEN_REGEX.finditer(line):
                     token = match.group().strip()
                     if not token or token.startswith(";"):  # Ignore whitespace and comments
@@ -43,9 +43,6 @@ class Lexer:
         
     # Turn string expression into a list of tokens
     def tokenizeString(self, expression: str):
-        expression = expression.replace("'", " (quote ")
-        expression = expression.replace("(", " ( ").replace(")", " ) ")
-
         tokenizedExpression = []
         for match in self.TOKEN_REGEX.finditer(expression):
             token = match.group().strip()

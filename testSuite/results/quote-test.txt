@@ -1,0 +1,33 @@
+['(', 'setq', 'my-list', "'", '(', 'a', 'b', 'c', '42', ')', ')']
+(BuiltIn.SETQ) setq
+  (AtomType.SYMBOL) my-list
+  (BuiltIn.QUOTE) quote
+    (AtomType.SYMBOL) a
+      (AtomType.SYMBOL) b
+      (AtomType.SYMBOL) c
+      (AtomType.NUMBER) 42
+
+['(', 'setq', 'quoted-list', '(', 'quote', '(', 'x', 'y', 'z', ')', ')', ')']
+(BuiltIn.SETQ) setq
+  (AtomType.SYMBOL) quoted-list
+  (BuiltIn.QUOTE) quote
+    (AtomType.SYMBOL) x
+      (AtomType.SYMBOL) y
+      (AtomType.SYMBOL) z
+
+['(', 'setq', 'quoted-symbol', '(', 'quote', 'symbol', ')', ')']
+(BuiltIn.SETQ) setq
+  (AtomType.SYMBOL) quoted-symbol
+  (BuiltIn.QUOTE) quote
+    (AtomType.SYMBOL) symbol
+
+['(', 'setq', 'quoted-function', '(', 'quote', '(', 'lambda', '(', 'x', ')', '(', '*', 'x', 'x', ')', ')', ')', ')']
+(BuiltIn.SETQ) setq
+  (AtomType.SYMBOL) quoted-function
+  (BuiltIn.QUOTE) quote
+    (BuiltIn.LAMBDA) lambda
+      (AtomType.SYMBOL) x
+      (BuiltIn.MULT) *
+        (AtomType.SYMBOL) x
+        (AtomType.SYMBOL) x
+
