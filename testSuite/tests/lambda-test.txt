@@ -1,0 +1,2 @@
+; 1. Simple lambda with two parameters
+(lambda (x y) (+ x y))  ; Adds two numbers

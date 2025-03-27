@@ -15,19 +15,10 @@
       (AtomType.SYMBOL) y
       (AtomType.SYMBOL) z
 
-['(', 'setq', 'quoted-symbol', '(', 'quote', 'symbol', ')', ')']
+['(', 'setq', 'quoted-symbol', '(', 'quote', 'a', ')', ')']
 (BuiltIn.SETQ) setq
   (AtomType.SYMBOL) quoted-symbol
   (BuiltIn.QUOTE) quote
-    (AtomType.SYMBOL) symbol
+    (AtomType.SYMBOL) a
 
 ['(', 'setq', 'quoted-function', '(', 'quote', '(', 'lambda', '(', 'x', ')', '(', '*', 'x', 'x', ')', ')', ')', ')']
-(BuiltIn.SETQ) setq
-  (AtomType.SYMBOL) quoted-function
-  (BuiltIn.QUOTE) quote
-    (BuiltIn.LAMBDA) lambda
-      (AtomType.SYMBOL) x
-      (BuiltIn.MULT) *
-        (AtomType.SYMBOL) x
-        (AtomType.SYMBOL) x
-

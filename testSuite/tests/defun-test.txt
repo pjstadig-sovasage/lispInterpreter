@@ -12,3 +12,15 @@
   (if (<= n 1)
       n
       (+ (fibonacci (- n 1)) (fibonacci (- n 2)))))
+
+;; Define a cond function that compares a number
+(defun check-number (x)
+  (cond
+    ((> x 10) "Greater than 10")
+    ((< x 5) "Less than 5")
+    ((= x 7) "Equal to 7")
+    (t "Between 5 and 10")))
+  
+;; Function with list destructuring in the parameters
+(defun add-pair ((a b)) 
+  (+ a b))  ; a and b are extracted automatically

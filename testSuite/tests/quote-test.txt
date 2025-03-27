@@ -5,7 +5,7 @@
 (setq quoted-list (quote (x y z)))
 
 ;; Using quote to prevent evaluation of an atom
-(setq quoted-symbol (quote symbol))
+(setq quoted-symbol (quote a))
 
 ;; Using quote with a function call
 (setq quoted-function (quote (lambda (x) (* x x))))

@@ -1,0 +1,9 @@
+['(', 'lambda', '(', 'x', 'y', ')', '(', '+', 'x', 'y', ')', ')']
+(BuiltIn.LAMBDA) lambda
+  (AtomType.LIST) arguments
+    (AtomType.SYMBOL) x
+      (AtomType.SYMBOL) y
+  (BuiltIn.ADD) +
+    (AtomType.SYMBOL) x
+    (AtomType.SYMBOL) y
+

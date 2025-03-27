@@ -1,20 +1,17 @@
-(defun test-quote-contexts ()
-  (let ((x 10)
-        (y 20))
-    ;; Example 1: Quoted literal value
-    (format t "Quoted value: ~A~%" 'hello) 
+;; Example 1: Quoted literal value
+(format t "Quoted value: ~A~%" 'hello) 
 
-    ;; Example 2: Quoted list (a list that should not be evaluated)
-    (format t "Quoted list: ~A~%" '(a b c))
+;; Example 2: Quoted list (a list that should not be evaluated)
+(format t "Quoted list: ~A~%" '(a b c))
 
-    ;; Example 3: Quoted variable (variable should not be evaluated, just returned as symbol)
-    (format t "Quoted variable: ~A~%" 'x)
+;; Example 3: Quoted variable (variable should not be evaluated, just returned as symbol)
+(format t "Quoted variable: ~A~%" 'x)
 
-    ;; Example 4: Quoting an expression (expression inside quote does not evaluate)
-    (format t "Quoted expression: ~A~%" '(+ x y))
+;; Example 4: Quoting an expression (expression inside quote does not evaluate)
+(format t "Quoted expression: ~A~%" '(+ x y))
 
-    ;; Example 5: Using quote with a list to ensure it's treated as a literal
-    (format t "Quoted list with expression: ~A~%" '(quote (+ x y)))
+;; Example 5: Using quote with a list to ensure it's treated as a literal
+(format t "Quoted list with expression: ~A~%" '(quote (+ x y)))
 
-    ;; Example 6: List that contains a quoted form as part of a larger expression
-    (format t "List with quoted forms: ~A~%" (list 'foo 'bar '(+ x y)))))
+;; Example 6: List that contains a quoted form as part of a larger expression
+(format t "List with quoted forms: ~A~%" (list 'foo 'bar '(+ x y)))))

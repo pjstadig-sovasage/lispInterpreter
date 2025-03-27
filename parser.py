@@ -18,6 +18,7 @@ class Parser:
         self.SPECIAL_FORMS: Dict[str, Callable[[Parser.ParseList, str], Node]] = {
             "defun" : [self.parseFn, "defun"],
             "defmacro" : [self.parseFn, "defmacro"],
+            "lambda" : [self.parseLambda, "lambda"],
             
             "cond" : [self.parseCond, "cond"],
             "do" : [self.parseDo, "do"],
@@ -134,6 +135,19 @@ class Parser:
         newFn = Node(name, BuiltIn.DEFUN, [fnName, arguments, docstring, fndef])
         
         return newFn    
+
+    def parseLambda(self, expression: ParseList, name: str) -> Node:
+        print("Parsing Lambda")
+        print(expression)
+        arguments = self.parse(expression)
+        # arguments.append(self.parse(expression))
+        print(arguments)
+        arguments = Node("arguments", AtomType.LIST, [arguments])
+        print(arguments)
+        lambdaDef = self.parse(expression)
+        
+        lambdaFn  = Node(name, BuiltIn.LAMBDA, [arguments, lambdaDef])
+        return lambdaFn
     
     # Parse quote and unquote:
     # (quote (var1 var2 ...)) OR '(var1 var2) OR 'var1
