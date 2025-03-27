@@ -21,7 +21,7 @@ class Controller:
                     tokenizedString = list(self.lexer.tokenizeString(user_input))
                     print(f"Tokenized expression: {tokenizedString}")
                     ast = self.parser.parseExpression(tokenizedString)
-                    print("AST:"), ast.print_tree()
+                    print(f"AST: {ast.astString()}")
             except Exception as e:
                 print(f"Error encountered: {e}")
 
