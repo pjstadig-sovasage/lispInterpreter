@@ -42,4 +42,3 @@
         (BuiltIn.ADD) +
           (AtomType.SYMBOL) x
           (AtomType.SYMBOL) y
-

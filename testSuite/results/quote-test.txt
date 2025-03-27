@@ -27,8 +27,7 @@
 (BuiltIn.SETQ) setq
   (AtomType.SYMBOL) quoted-function
   (BuiltIn.QUOTE) quote
-    (AtomType.LIST) 
-      (BuiltIn.LAMBDA) lambda
+    (BuiltIn.LAMBDA) lambda
       (AtomType.LIST) 
         (AtomType.SYMBOL) x
       (AtomType.LIST) 

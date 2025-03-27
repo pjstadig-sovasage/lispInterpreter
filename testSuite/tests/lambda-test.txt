@@ -1,0 +1,11 @@
+; 1. Simple lambda with two parameters
+(lambda (x y) (+ x y))  ; Adds two numbers
+
+; 2. Lambda with a single parameter
+(lambda (x) (* x x))  ; Squares the number
+
+; 3. Lambda with multiple parameters and a conditional
+(lambda (x y) (if (> x y) x y))  ; Returns the larger of x and y
+
+; 4. Lambda that returns another lambda
+(lambda (x) (lambda (y) (+ x y)))  ; Returns a lambda that adds x to y

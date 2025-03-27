@@ -1,46 +1,55 @@
 ['(', 'defmacro', 'add-two-numbers', '(', 'x', 'y', ')', '`', '(', '+', ',', 'x', ',', 'y', ')', ')']
-(BuiltIn.DEFUN) defmacro
+(BuiltIn.DEFMACRO) defmacro
   (AtomType.SYMBOL) add-two-numbers
-  (AtomType.LIST) ['x', 'y']
   (AtomType.STRING) 
-  (BuiltIn.QUASIQUOTE) quasi-quote
-    (BuiltIn.ADD) +
-      (BuiltIn.QUOTE) unquote
-        (AtomType.SYMBOL) x
-      (BuiltIn.QUOTE) unquote
-        (AtomType.SYMBOL) y
+  (AtomType.LIST) 
+    (AtomType.SYMBOL) x
+    (AtomType.SYMBOL) y
+  (AtomType.LIST) 
+    (BuiltIn.QUASIQUOTE) quasi-quote
+      (BuiltIn.ADD) +
+        (BuiltIn.UNQUOTE) unquote
+          (AtomType.SYMBOL) x
+        (BuiltIn.UNQUOTE) unquote
+          (AtomType.SYMBOL) y
 
 ['(', 'defmacro', 'factorial', '(', 'n', ')', '`', '(', 'if', '(', '<=', ',', 'n', '1', ')', '1', '(', '*', ',', 'n', '(', 'factorial', '(', '-', ',', 'n', '1', ')', ')', ')', ')', ')']
-(BuiltIn.DEFUN) defmacro
+(BuiltIn.DEFMACRO) defmacro
   (AtomType.SYMBOL) factorial
-  (AtomType.LIST) ['n']
   (AtomType.STRING) 
-  (BuiltIn.QUASIQUOTE) quasi-quote
-    (BuiltIn.IF) if
-      (BuiltIn.LEQ) <=
-        (BuiltIn.QUOTE) unquote
-          (AtomType.SYMBOL) n
+  (AtomType.LIST) 
+    (AtomType.SYMBOL) n
+  (AtomType.LIST) 
+    (BuiltIn.QUASIQUOTE) quasi-quote
+      (BuiltIn.IF) if
+        (BuiltIn.LEQ) <=
+          (BuiltIn.UNQUOTE) unquote
+            (AtomType.SYMBOL) n
+          (AtomType.NUMBER) 1
         (AtomType.NUMBER) 1
-      (AtomType.NUMBER) 1
-      (BuiltIn.MULT) *
-        (BuiltIn.QUOTE) unquote
-          (AtomType.SYMBOL) n
-        (AtomType.SYMBOL) factorial
-          (BuiltIn.SUB) -
-            (BuiltIn.QUOTE) unquote
-              (AtomType.SYMBOL) n
-            (AtomType.NUMBER) 1
+        (BuiltIn.MULT) *
+          (BuiltIn.UNQUOTE) unquote
+            (AtomType.SYMBOL) n
+          (AtomType.SYMBOL) factorial
+            (BuiltIn.SUB) -
+              (BuiltIn.UNQUOTE) unquote
+                (AtomType.SYMBOL) n
+              (AtomType.NUMBER) 1
 
 ['(', 'defmacro', 'my-if', '(', 'test', 'then', 'else', ')', '`', '(', 'if', ',', 'test', ',', 'then', ',', 'else', ')', ')']
-(BuiltIn.DEFUN) defmacro
+(BuiltIn.DEFMACRO) defmacro
   (AtomType.SYMBOL) my-if
-  (AtomType.LIST) ['test', 'then', 'else']
   (AtomType.STRING) 
-  (BuiltIn.QUASIQUOTE) quasi-quote
-    (BuiltIn.IF) if
-      (BuiltIn.QUOTE) unquote
-        (AtomType.SYMBOL) test
-      (BuiltIn.QUOTE) unquote
-        (AtomType.SYMBOL) then
-      (BuiltIn.QUOTE) unquote
-        (AtomType.SYMBOL) else
+  (AtomType.LIST) 
+    (AtomType.SYMBOL) test
+    (AtomType.SYMBOL) then
+    (AtomType.SYMBOL) else
+  (AtomType.LIST) 
+    (BuiltIn.QUASIQUOTE) quasi-quote
+      (BuiltIn.IF) if
+        (BuiltIn.UNQUOTE) unquote
+          (AtomType.SYMBOL) test
+        (BuiltIn.UNQUOTE) unquote
+          (AtomType.SYMBOL) then
+        (BuiltIn.UNQUOTE) unquote
+          (AtomType.SYMBOL) else

@@ -15,18 +15,18 @@ class Parser:
         self.tokenList = []
         self.parsedExpressions = []
         
-        self.SPECIAL_FORMS: Dict[str, Callable[[Parser.ParseList, str], Node]] = {
-            "defun" : [self.parseFn, "defun"],
-            "defmacro" : [self.parseFn, "defmacro"],
-            "lambda" : [self.parseLambda, "lambda"],
+        self.SPECIAL_FORMS: Dict[str, tuple[Callable[[Parser.ParseList, str, BuiltIn], Node], str, BuiltIn]] = {
+            "defun" : [self.parseFn, "defun", BuiltIn.DEFUN],
+            "defmacro" : [self.parseFn, "defmacro", BuiltIn.DEFMACRO],
+            "lambda" : [self.parseLambda, "lambda", BuiltIn.LAMBDA],
             
-            "cond" : [self.parseCond, "cond"],
-            "do" : [self.parseDo, "do"],
+            "cond" : [self.parseCond, "cond", BuiltIn.COND],
+            # "do" : [self.parseDo, "do", BuiltIn.DO],
             
-            "quote" : [self.parseQuote, "quote"],
-            "'" : [self.parseQuote, "quote"],
-            "`" : [self.parseQuasiQuote, "quasi-quote"],
-            "," : [self.parseQuote, "unquote"]
+            "quote" : [self.parseQuote, "quote", BuiltIn.QUOTE],
+            "'" : [self.parseQuote, "quote", BuiltIn.QUOTE],
+            "`" : [self.parseQuasiQuote, "quasi-quote", BuiltIn.QUASIQUOTE],
+            "," : [self.parseQuote, "unquote", BuiltIn.UNQUOTE]
         } 
 
     # Parse a list of expressions
@@ -51,15 +51,15 @@ class Parser:
             # Get the head value
             head = expression.mpop()
             head = self.tokenToNode(head)
+            
+            # Handle special forms
+            if head.val in self.SPECIAL_FORMS:
+                return self.handleSpecialForm(expression, head.val)
 
             # Process as list
             if (head.type != AtomType.SYMBOL and type(head.type) != BuiltIn) or asList:
                 head = Node(None, AtomType.LIST, [head]) # Old head becomes first element
                 
-            # Handle special forms
-            if head.val in self.SPECIAL_FORMS:
-                return self.handleSpecialForm(expression, head.val)
-            
             # Process arguments 
             while expression[0] != ")":
                 head.children.append(self.parse(expression))
@@ -77,7 +77,7 @@ class Parser:
     # Call the appropriate special form
     def handleSpecialForm(self, expression: ParseList, type: str) -> Node:
         specialForm = self.SPECIAL_FORMS[type]
-        return specialForm[0](expression, specialForm[1])
+        return specialForm[0](expression, specialForm[1], specialForm[2])
         
     # Given a token, return a node representing it
     def tokenToNode(self, nextToken) -> Node:
@@ -91,7 +91,7 @@ class Parser:
         return Node(nextToken, AtomType.SYMBOL)
     
     # Parse the conditional special form
-    def parseCond(self, expression: ParseList, name: str) -> Node:
+    def parseCond(self, expression: ParseList, name: str, type: BuiltIn) -> Node:
         # Pop off "cond"
         expression.mpop()
         
@@ -116,7 +116,7 @@ class Parser:
         return condNode
 
     # Parse the defun special form
-    def parseFn(self, expression: ParseList, name: str) -> Node:
+    def parseFn(self, expression: ParseList, name: str, type: BuiltIn) -> Node:
         # Pop next func name and opening paren: [funcName, (]
         fnName = Node(expression.mpop(), AtomType.SYMBOL) 
         expression.mpop()
@@ -141,34 +141,34 @@ class Parser:
         expression.mpop()
         
         # Build function node
-        newFn = Node(name, BuiltIn.DEFUN, [fnName, arguments, docstring, body])
+        newFn = Node(name, type, [fnName, docstring, arguments, body])
         
         return newFn    
 
-    def parseLambda(self, expression: ParseList, name: str) -> Node:
-        # Pop arguments 
-        arguments = Node(None, AtomType.LIST)
-        while expression[0] != ")":
-            arguments.children.append(self.parse(expression, asList=True))
-        expression.mpop()
+    def parseLambda(self, expression: ParseList, name: str, type: BuiltIn) -> Node:
+        # Parse the arguments 
+        arguments = self.parse(expression, asList=True)
 
+        # Parse the body of the function as a list of expressions
+        body = Node(None, AtomType.LIST)
+        while expression[0] != ")":
+            body.children.append(self.parse(expression))
+        expression.mpop()
         
-        arguments = Node("arguments", AtomType.LIST, [arguments])
-        lambdaDef = self.parse(expression)
-        lambdaFn  = Node(name, BuiltIn.LAMBDA, [arguments, lambdaDef])
+        lambdaFn  = Node(name, type, [arguments, body])
         
         return lambdaFn
     
     # Parse quote and unquote:
     # (quote (var1 var2 ...)) OR '(var1 var2) OR 'var1
     # `(+ ,x ,y)
-    def parseQuote(self, expression: ParseList, name: str) -> Node:
-        quote = Node(name, BuiltIn.QUOTE, [self.parse(expression, asList=True)])
+    def parseQuote(self, expression: ParseList, name: str, type: BuiltIn) -> Node:
+        quote = Node(name, type, [self.parse(expression, asList=True)])
         
         return quote
 
     # Parse quasi-quote  
-    def parseQuasiQuote(self, expression: ParseList, name: str) -> Node:
+    def parseQuasiQuote(self, expression: ParseList, name: str, type: BuiltIn) -> Node:
         quasiQuote = Node("quasi-quote", BuiltIn.QUASIQUOTE)
         
         while expression[0] != ")":

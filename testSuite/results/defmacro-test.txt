@@ -1,56 +1,56 @@
 ['(', 'defmacro', 'add-two-numbers', '(', 'x', 'y', ')', '`', '(', '+', ',', 'x', ',', 'y', ')', ')']
-(BuiltIn.DEFUN) defmacro
+(BuiltIn.DEFMACRO) defmacro
   (AtomType.SYMBOL) add-two-numbers
+  (AtomType.STRING) 
   (AtomType.LIST) 
     (AtomType.SYMBOL) x
     (AtomType.SYMBOL) y
-  (AtomType.STRING) 
   (AtomType.LIST) 
     (BuiltIn.QUASIQUOTE) quasi-quote
       (BuiltIn.ADD) +
-        (BuiltIn.QUOTE) unquote
+        (BuiltIn.UNQUOTE) unquote
           (AtomType.SYMBOL) x
-        (BuiltIn.QUOTE) unquote
+        (BuiltIn.UNQUOTE) unquote
           (AtomType.SYMBOL) y
 
 ['(', 'defmacro', 'factorial', '(', 'n', ')', '`', '(', 'if', '(', '<=', ',', 'n', '1', ')', '1', '(', '*', ',', 'n', '(', 'factorial', '(', '-', ',', 'n', '1', ')', ')', ')', ')', ')']
-(BuiltIn.DEFUN) defmacro
+(BuiltIn.DEFMACRO) defmacro
   (AtomType.SYMBOL) factorial
+  (AtomType.STRING) 
   (AtomType.LIST) 
     (AtomType.SYMBOL) n
-  (AtomType.STRING) 
   (AtomType.LIST) 
     (BuiltIn.QUASIQUOTE) quasi-quote
       (BuiltIn.IF) if
         (BuiltIn.LEQ) <=
-          (BuiltIn.QUOTE) unquote
+          (BuiltIn.UNQUOTE) unquote
             (AtomType.SYMBOL) n
           (AtomType.NUMBER) 1
         (AtomType.NUMBER) 1
         (BuiltIn.MULT) *
-          (BuiltIn.QUOTE) unquote
+          (BuiltIn.UNQUOTE) unquote
             (AtomType.SYMBOL) n
           (AtomType.SYMBOL) factorial
             (BuiltIn.SUB) -
-              (BuiltIn.QUOTE) unquote
+              (BuiltIn.UNQUOTE) unquote
                 (AtomType.SYMBOL) n
               (AtomType.NUMBER) 1
 
 ['(', 'defmacro', 'my-if', '(', 'test', 'then', 'else', ')', '`', '(', 'if', ',', 'test', ',', 'then', ',', 'else', ')', ')']
-(BuiltIn.DEFUN) defmacro
+(BuiltIn.DEFMACRO) defmacro
   (AtomType.SYMBOL) my-if
+  (AtomType.STRING) 
   (AtomType.LIST) 
     (AtomType.SYMBOL) test
     (AtomType.SYMBOL) then
     (AtomType.SYMBOL) else
-  (AtomType.STRING) 
   (AtomType.LIST) 
     (BuiltIn.QUASIQUOTE) quasi-quote
       (BuiltIn.IF) if
-        (BuiltIn.QUOTE) unquote
+        (BuiltIn.UNQUOTE) unquote
           (AtomType.SYMBOL) test
-        (BuiltIn.QUOTE) unquote
+        (BuiltIn.UNQUOTE) unquote
           (AtomType.SYMBOL) then
-        (BuiltIn.QUOTE) unquote
+        (BuiltIn.UNQUOTE) unquote
           (AtomType.SYMBOL) else
 

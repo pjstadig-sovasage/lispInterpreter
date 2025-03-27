@@ -1,9 +1,9 @@
 ['(', 'defun', 'factorial', '(', 'n', ')', '"Computes the factorial of a number recursively."', '(', 'if', '(', '<=', 'n', '1', ')', '1', '(', '*', 'n', '(', 'factorial', '(', '-', 'n', '1', ')', ')', ')', ')', ')']
 (BuiltIn.DEFUN) defun
   (AtomType.SYMBOL) factorial
+  (AtomType.STRING) "Computes the factorial of a number recursively."
   (AtomType.LIST) 
     (AtomType.SYMBOL) n
-  (AtomType.STRING) "Computes the factorial of a number recursively."
   (AtomType.LIST) 
     (BuiltIn.IF) if
       (BuiltIn.LEQ) <=
@@ -20,9 +20,9 @@
 ['(', 'defun', 'fibonacci', '(', 'n', ')', '"Computes the nth Fibonacci number using recursion."', '(', 'if', '(', '<=', 'n', '1', ')', 'n', '(', '+', '(', 'fibonacci', '(', '-', 'n', '1', ')', ')', '(', 'fibonacci', '(', '-', 'n', '2', ')', ')', ')', ')', ')']
 (BuiltIn.DEFUN) defun
   (AtomType.SYMBOL) fibonacci
+  (AtomType.STRING) "Computes the nth Fibonacci number using recursion."
   (AtomType.LIST) 
     (AtomType.SYMBOL) n
-  (AtomType.STRING) "Computes the nth Fibonacci number using recursion."
   (AtomType.LIST) 
     (BuiltIn.IF) if
       (BuiltIn.LEQ) <=
@@ -42,9 +42,9 @@
 ['(', 'defun', 'check-number', '(', 'x', ')', '(', 'cond', '(', '(', '>', 'x', '10', ')', '"Greater than 10"', ')', '(', '(', '<', 'x', '5', ')', '"Less than 5"', ')', '(', '(', '=', 'x', '7', ')', '"Equal to 7"', ')', '(', 't', '"Between 5 and 10"', ')', ')', ')']
 (BuiltIn.DEFUN) defun
   (AtomType.SYMBOL) check-number
+  (AtomType.STRING) 
   (AtomType.LIST) 
     (AtomType.SYMBOL) x
-  (AtomType.STRING) 
   (AtomType.LIST) 
     (BuiltIn.COND) cond
       (AtomType.SYMBOL) >
@@ -64,11 +64,11 @@
 ['(', 'defun', 'add-pair', '(', '(', 'a', 'b', ')', ')', '(', '+', 'a', 'b', ')', ')']
 (BuiltIn.DEFUN) defun
   (AtomType.SYMBOL) add-pair
+  (AtomType.STRING) 
   (AtomType.LIST) 
     (AtomType.LIST) 
       (AtomType.SYMBOL) a
       (AtomType.SYMBOL) b
-  (AtomType.STRING) 
   (AtomType.LIST) 
     (BuiltIn.ADD) +
       (AtomType.SYMBOL) a
@@ -77,11 +77,11 @@
 ['(', 'defun', 'greet-and-add', '(', 'name', 'x', 'y', ')', '(', 'print', '"Adding two numbers"', ')', '(', '+', 'x', 'y', ')', ')']
 (BuiltIn.DEFUN) defun
   (AtomType.SYMBOL) greet-and-add
+  (AtomType.STRING) 
   (AtomType.LIST) 
     (AtomType.SYMBOL) name
     (AtomType.SYMBOL) x
     (AtomType.SYMBOL) y
-  (AtomType.STRING) 
   (AtomType.LIST) 
     (AtomType.SYMBOL) print
       (AtomType.STRING) "Adding two numbers"
