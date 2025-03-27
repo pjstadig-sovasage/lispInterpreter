@@ -7,7 +7,7 @@ class AtomType(Enum):
     CHARACTER = "Character"
     SYMBOL = "Symbol"
     LIST = "List"
-    
+
 class BuiltIn(Enum):
     QUOTE = "Comment"
     IF = "If statement"
@@ -21,7 +21,7 @@ class BuiltIn(Enum):
     DEFMACRO = "Define MACRO"
     QUASIQUOTE = "Define quasiquote"
     UNQUOTE = "Evaluate inside quasiquote"
-    
+
     ADD = "+"
     SUB = "-"
     MULT = "*"
@@ -33,13 +33,13 @@ reservedSymbols = {
     # Atoms
     "T" : AtomType.BOOLEAN,
     "NIL" : AtomType.BOOLEAN,
-    
+
     # Built-In Functions
     "+" : BuiltIn.ADD,
     "-" : BuiltIn.SUB,
     "*" : BuiltIn.MULT,
     "<=" : BuiltIn.LEQ,
-    
+
     # Special Forms
     "quote" : BuiltIn.QUOTE,
     "if" : BuiltIn.IF,
@@ -48,8 +48,8 @@ reservedSymbols = {
 
     "let" : BuiltIn.LET,
     "let*" : BuiltIn.LETSEQ,
-    "setq" : BuiltIn.SETQ,    
-    
+    "setq" : BuiltIn.SETQ,
+
     # Define functions/cacros
     "lambda" : BuiltIn.LAMBDA,
     "defun" : BuiltIn.DEFUN,

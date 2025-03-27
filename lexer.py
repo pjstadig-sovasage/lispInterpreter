@@ -10,7 +10,7 @@ class Lexer:
         "[^"]*"|                  # Strings
         [^\s()'";]+               # Symbols
         """, re.VERBOSE)
-    
+
     def tokenizeFile(self, filename):
         """Generates tokens from a Lisp source file."""
         with open(filename, "r", encoding="utf-8") as file:
@@ -21,7 +21,7 @@ class Lexer:
                     if not token or token.startswith(";"):  # Ignore whitespace and comments
                         continue
                     yield token
-    
+
     # Split a tokenized file into its individual expressions
     def chunkFile(self, tokenizedFile: List[str]) -> List[List[str]]:
         paren = 0
@@ -40,7 +40,7 @@ class Lexer:
                     currentExpression = []
 
         return tokenizedExpressions
-        
+
     # Turn string expression into a list of tokens
     def tokenizeString(self, expression: str):
         tokenizedExpression = []
@@ -49,5 +49,5 @@ class Lexer:
             if not token:
                 continue
             tokenizedExpression.append(token)
-            
+
         return tokenizedExpression

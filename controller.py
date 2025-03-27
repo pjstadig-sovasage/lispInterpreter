@@ -5,14 +5,14 @@ class Controller:
     def __init__(self):
         self.lexer = Lexer()
         self.parser = Parser()
-    
+
     # Evaluate command line input line by line
     def runREPL(self):
         running = True
-        
+
         print("Enter LISP expressions one-by-one for evaluation. Type q to exit.")
         while running:
-            try: 
+            try:
                 user_input = input(">>> ")
                 if user_input == "q":
                     print("Exiting LISP Interpreter")
@@ -30,13 +30,13 @@ class Controller:
         tokenizedFile = list(self.lexer.tokenizeFile(filename))
         tokenizedExpressions = self.lexer.chunkFile(tokenizedFile)
         parsedExpressions = self.parser.parseExpressionList(tokenizedExpressions)
-        
+
         # Print to console
         if printConsole:
             for i in range(0, len(tokenizedExpressions)):
                 print(tokenizedExpressions[i])
                 print(parsedExpressions[i])
-            
+
         # Output log
         with open(filename.replace("tests", "results"), 'w') as outFile:
             for i in range(0, len(tokenizedExpressions)):

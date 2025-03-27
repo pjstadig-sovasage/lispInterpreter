@@ -1,10 +1,10 @@
 import sys
 from controller import Controller
 
-# Start program 
+# Start program
 if __name__ == "__main__":
     controller = Controller()
-    
+
     if "--file" in sys.argv:
         print("Parsing file...")
         fileIndex = sys.argv.index('--file')
