@@ -24,7 +24,7 @@ class TestREPL(unittest.TestCase):
                 with open(keyFile, 'r', encoding='utf-8') as file:
                     expectedOutput = file.read().strip()
                     
-                print(f"Running File: {os.path.normpath(test)}")
+                print(f"\nRunning File: {os.path.normpath(test)}")
                 controller.runFile(os.path.normpath(test), False)
                 
                 with open(resFile, 'r', encoding='utf-8') as file:

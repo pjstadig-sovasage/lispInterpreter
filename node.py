@@ -12,12 +12,12 @@ class Node:
     def __repr__(self):
         return self.astString()
     
-    def build_tree(self, level=0):
-        return '  ' * level + f'({self.type}) {self.val}'
-       
     def astString(self, level=0) -> str:
         # Initialize the result string with the current node
-        result = '  ' * level + f'({self.type}) {self.val}\n'
+        displayVal = self.val
+        if not self.val:
+            displayVal = ""
+        result = '  ' * level + f'({self.type}) {displayVal}\n'
         
         # Recursively add the children to the result string
         for child in self.children:

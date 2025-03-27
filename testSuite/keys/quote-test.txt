@@ -2,7 +2,8 @@
 (BuiltIn.SETQ) setq
   (AtomType.SYMBOL) my-list
   (BuiltIn.QUOTE) quote
-    (AtomType.SYMBOL) a
+    (AtomType.LIST) 
+      (AtomType.SYMBOL) a
       (AtomType.SYMBOL) b
       (AtomType.SYMBOL) c
       (AtomType.NUMBER) 42
@@ -11,22 +12,26 @@
 (BuiltIn.SETQ) setq
   (AtomType.SYMBOL) quoted-list
   (BuiltIn.QUOTE) quote
-    (AtomType.SYMBOL) x
+    (AtomType.LIST) 
+      (AtomType.SYMBOL) x
       (AtomType.SYMBOL) y
       (AtomType.SYMBOL) z
 
-['(', 'setq', 'quoted-symbol', '(', 'quote', 'symbol', ')', ')']
+['(', 'setq', 'quoted-symbol', '(', 'quote', 'a', ')', ')']
 (BuiltIn.SETQ) setq
   (AtomType.SYMBOL) quoted-symbol
   (BuiltIn.QUOTE) quote
-    (AtomType.SYMBOL) symbol
+    (AtomType.SYMBOL) a
 
 ['(', 'setq', 'quoted-function', '(', 'quote', '(', 'lambda', '(', 'x', ')', '(', '*', 'x', 'x', ')', ')', ')', ')']
 (BuiltIn.SETQ) setq
   (AtomType.SYMBOL) quoted-function
   (BuiltIn.QUOTE) quote
-    (BuiltIn.LAMBDA) lambda
-      (AtomType.SYMBOL) x
-      (BuiltIn.MULT) *
+    (AtomType.LIST) 
+      (BuiltIn.LAMBDA) lambda
+      (AtomType.LIST) 
         (AtomType.SYMBOL) x
-        (AtomType.SYMBOL) x
+      (AtomType.LIST) 
+        (BuiltIn.MULT) *
+          (AtomType.SYMBOL) x
+          (AtomType.SYMBOL) x

@@ -124,7 +124,7 @@ class Parser:
         # Pop arguments 
         arguments = Node(None, AtomType.LIST)
         while expression[0] != ")":
-            arguments.children.append(self.parse(expression))
+            arguments.children.append(self.parse(expression, asList=True))
         expression.mpop()
 
         # Pop doc string
@@ -134,25 +134,29 @@ class Parser:
             docstring = Node(nextToken, AtomType.STRING)
             expression.mpop()
         
-        # Parse the rest of the function
-        fndef = self.parse(expression)
+        # Parse the body of the function as a list of expression
+        body = Node(None, AtomType.LIST)
+        while expression[0] != ")":
+            body.children.append(self.parse(expression))
+        expression.mpop()
         
         # Build function node
-        newFn = Node(name, BuiltIn.DEFUN, [fnName, arguments, docstring, fndef])
+        newFn = Node(name, BuiltIn.DEFUN, [fnName, arguments, docstring, body])
         
         return newFn    
 
     def parseLambda(self, expression: ParseList, name: str) -> Node:
-        print("Parsing Lambda")
-        print(expression)
-        arguments = self.parse(expression)
-        # arguments.append(self.parse(expression))
-        print(arguments)
-        arguments = Node("arguments", AtomType.LIST, [arguments])
-        print(arguments)
-        lambdaDef = self.parse(expression)
+        # Pop arguments 
+        arguments = Node(None, AtomType.LIST)
+        while expression[0] != ")":
+            arguments.children.append(self.parse(expression, asList=True))
+        expression.mpop()
+
         
+        arguments = Node("arguments", AtomType.LIST, [arguments])
+        lambdaDef = self.parse(expression)
         lambdaFn  = Node(name, BuiltIn.LAMBDA, [arguments, lambdaDef])
+        
         return lambdaFn
     
     # Parse quote and unquote:

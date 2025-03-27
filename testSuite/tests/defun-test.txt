@@ -1,5 +1,3 @@
-(+ 1 2 3)
-
 ;; Function for calculating the factorial of n
 (defun factorial (n)
   "Computes the factorial of a number recursively."
@@ -26,3 +24,8 @@
 ;; Function with list destructuring in the parameters
 (defun add-pair ((a b)) 
   (+ a b))  ; a and b are extracted automatically
+
+;; Function with multiple body statements
+(defun greet-and-add (name x y)
+  (print "Adding two numbers")  ; First expression (side effect)
+  (+ x y))                      ; Second expression (returned value)

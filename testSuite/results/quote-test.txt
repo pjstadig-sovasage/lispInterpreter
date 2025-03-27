@@ -2,7 +2,7 @@
 (BuiltIn.SETQ) setq
   (AtomType.SYMBOL) my-list
   (BuiltIn.QUOTE) quote
-    (AtomType.LIST) None
+    (AtomType.LIST) 
       (AtomType.SYMBOL) a
       (AtomType.SYMBOL) b
       (AtomType.SYMBOL) c
@@ -12,7 +12,7 @@
 (BuiltIn.SETQ) setq
   (AtomType.SYMBOL) quoted-list
   (BuiltIn.QUOTE) quote
-    (AtomType.LIST) None
+    (AtomType.LIST) 
       (AtomType.SYMBOL) x
       (AtomType.SYMBOL) y
       (AtomType.SYMBOL) z
@@ -27,10 +27,12 @@
 (BuiltIn.SETQ) setq
   (AtomType.SYMBOL) quoted-function
   (BuiltIn.QUOTE) quote
-    (AtomType.LIST) None
+    (AtomType.LIST) 
       (BuiltIn.LAMBDA) lambda
-      (AtomType.SYMBOL) x
-      (BuiltIn.MULT) *
+      (AtomType.LIST) 
         (AtomType.SYMBOL) x
-        (AtomType.SYMBOL) x
+      (AtomType.LIST) 
+        (BuiltIn.MULT) *
+          (AtomType.SYMBOL) x
+          (AtomType.SYMBOL) x
 

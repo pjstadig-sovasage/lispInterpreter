@@ -1,77 +1,91 @@
-['(', '+', '1', '2', '3', ')']
-(BuiltIn.ADD) +
-  (AtomType.NUMBER) 1
-  (AtomType.NUMBER) 2
-  (AtomType.NUMBER) 3
-
 ['(', 'defun', 'factorial', '(', 'n', ')', '"Computes the factorial of a number recursively."', '(', 'if', '(', '<=', 'n', '1', ')', '1', '(', '*', 'n', '(', 'factorial', '(', '-', 'n', '1', ')', ')', ')', ')', ')']
 (BuiltIn.DEFUN) defun
   (AtomType.SYMBOL) factorial
-  (AtomType.LIST) None
+  (AtomType.LIST) 
     (AtomType.SYMBOL) n
   (AtomType.STRING) "Computes the factorial of a number recursively."
-  (BuiltIn.IF) if
-    (BuiltIn.LEQ) <=
-      (AtomType.SYMBOL) n
+  (AtomType.LIST) 
+    (BuiltIn.IF) if
+      (BuiltIn.LEQ) <=
+        (AtomType.SYMBOL) n
+        (AtomType.NUMBER) 1
       (AtomType.NUMBER) 1
-    (AtomType.NUMBER) 1
-    (BuiltIn.MULT) *
-      (AtomType.SYMBOL) n
-      (AtomType.SYMBOL) factorial
-        (BuiltIn.SUB) -
-          (AtomType.SYMBOL) n
-          (AtomType.NUMBER) 1
+      (BuiltIn.MULT) *
+        (AtomType.SYMBOL) n
+        (AtomType.SYMBOL) factorial
+          (BuiltIn.SUB) -
+            (AtomType.SYMBOL) n
+            (AtomType.NUMBER) 1
 
 ['(', 'defun', 'fibonacci', '(', 'n', ')', '"Computes the nth Fibonacci number using recursion."', '(', 'if', '(', '<=', 'n', '1', ')', 'n', '(', '+', '(', 'fibonacci', '(', '-', 'n', '1', ')', ')', '(', 'fibonacci', '(', '-', 'n', '2', ')', ')', ')', ')', ')']
 (BuiltIn.DEFUN) defun
   (AtomType.SYMBOL) fibonacci
-  (AtomType.LIST) None
+  (AtomType.LIST) 
     (AtomType.SYMBOL) n
   (AtomType.STRING) "Computes the nth Fibonacci number using recursion."
-  (BuiltIn.IF) if
-    (BuiltIn.LEQ) <=
+  (AtomType.LIST) 
+    (BuiltIn.IF) if
+      (BuiltIn.LEQ) <=
+        (AtomType.SYMBOL) n
+        (AtomType.NUMBER) 1
       (AtomType.SYMBOL) n
-      (AtomType.NUMBER) 1
-    (AtomType.SYMBOL) n
-    (BuiltIn.ADD) +
-      (AtomType.SYMBOL) fibonacci
-        (BuiltIn.SUB) -
-          (AtomType.SYMBOL) n
-          (AtomType.NUMBER) 1
-      (AtomType.SYMBOL) fibonacci
-        (BuiltIn.SUB) -
-          (AtomType.SYMBOL) n
-          (AtomType.NUMBER) 2
+      (BuiltIn.ADD) +
+        (AtomType.SYMBOL) fibonacci
+          (BuiltIn.SUB) -
+            (AtomType.SYMBOL) n
+            (AtomType.NUMBER) 1
+        (AtomType.SYMBOL) fibonacci
+          (BuiltIn.SUB) -
+            (AtomType.SYMBOL) n
+            (AtomType.NUMBER) 2
 
 ['(', 'defun', 'check-number', '(', 'x', ')', '(', 'cond', '(', '(', '>', 'x', '10', ')', '"Greater than 10"', ')', '(', '(', '<', 'x', '5', ')', '"Less than 5"', ')', '(', '(', '=', 'x', '7', ')', '"Equal to 7"', ')', '(', 't', '"Between 5 and 10"', ')', ')', ')']
 (BuiltIn.DEFUN) defun
   (AtomType.SYMBOL) check-number
-  (AtomType.LIST) None
+  (AtomType.LIST) 
     (AtomType.SYMBOL) x
   (AtomType.STRING) 
-  (BuiltIn.COND) cond
-    (AtomType.SYMBOL) >
-      (AtomType.SYMBOL) x
-      (AtomType.NUMBER) 10
-    (AtomType.STRING) "Greater than 10"
-    (AtomType.SYMBOL) <
-      (AtomType.SYMBOL) x
-      (AtomType.NUMBER) 5
-    (AtomType.STRING) "Less than 5"
-    (AtomType.SYMBOL) =
-      (AtomType.SYMBOL) x
-      (AtomType.NUMBER) 7
-    (AtomType.STRING) "Equal to 7"
-    (AtomType.STRING) "Between 5 and 10"
+  (AtomType.LIST) 
+    (BuiltIn.COND) cond
+      (AtomType.SYMBOL) >
+        (AtomType.SYMBOL) x
+        (AtomType.NUMBER) 10
+      (AtomType.STRING) "Greater than 10"
+      (AtomType.SYMBOL) <
+        (AtomType.SYMBOL) x
+        (AtomType.NUMBER) 5
+      (AtomType.STRING) "Less than 5"
+      (AtomType.SYMBOL) =
+        (AtomType.SYMBOL) x
+        (AtomType.NUMBER) 7
+      (AtomType.STRING) "Equal to 7"
+      (AtomType.STRING) "Between 5 and 10"
 
 ['(', 'defun', 'add-pair', '(', '(', 'a', 'b', ')', ')', '(', '+', 'a', 'b', ')', ')']
 (BuiltIn.DEFUN) defun
   (AtomType.SYMBOL) add-pair
-  (AtomType.LIST) None
-    (AtomType.SYMBOL) a
+  (AtomType.LIST) 
+    (AtomType.LIST) 
+      (AtomType.SYMBOL) a
       (AtomType.SYMBOL) b
   (AtomType.STRING) 
-  (BuiltIn.ADD) +
-    (AtomType.SYMBOL) a
-    (AtomType.SYMBOL) b
+  (AtomType.LIST) 
+    (BuiltIn.ADD) +
+      (AtomType.SYMBOL) a
+      (AtomType.SYMBOL) b
+
+['(', 'defun', 'greet-and-add', '(', 'name', 'x', 'y', ')', '(', 'print', '"Adding two numbers"', ')', '(', '+', 'x', 'y', ')', ')']
+(BuiltIn.DEFUN) defun
+  (AtomType.SYMBOL) greet-and-add
+  (AtomType.LIST) 
+    (AtomType.SYMBOL) name
+    (AtomType.SYMBOL) x
+    (AtomType.SYMBOL) y
+  (AtomType.STRING) 
+  (AtomType.LIST) 
+    (AtomType.SYMBOL) print
+      (AtomType.STRING) "Adding two numbers"
+    (BuiltIn.ADD) +
+      (AtomType.SYMBOL) x
+      (AtomType.SYMBOL) y
 
