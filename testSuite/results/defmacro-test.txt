@@ -1,5 +1,5 @@
 ['(', 'defmacro', 'add-two-numbers', '(', 'x', 'y', ')', '`', '(', '+', ',', 'x', ',', 'y', ')', ')']
-(BuiltIn.DEFUN) defun
+(BuiltIn.DEFUN) defmacro
   (AtomType.SYMBOL) add-two-numbers
   (AtomType.LIST) ['x', 'y']
   (AtomType.STRING) 
@@ -11,7 +11,7 @@
         (AtomType.SYMBOL) y
 
 ['(', 'defmacro', 'factorial', '(', 'n', ')', '`', '(', 'if', '(', '<=', ',', 'n', '1', ')', '1', '(', '*', ',', 'n', '(', 'factorial', '(', '-', ',', 'n', '1', ')', ')', ')', ')', ')']
-(BuiltIn.DEFUN) defun
+(BuiltIn.DEFUN) defmacro
   (AtomType.SYMBOL) factorial
   (AtomType.LIST) ['n']
   (AtomType.STRING) 
@@ -32,7 +32,7 @@
             (AtomType.NUMBER) 1
 
 ['(', 'defmacro', 'my-if', '(', 'test', 'then', 'else', ')', '`', '(', 'if', ',', 'test', ',', 'then', ',', 'else', ')', ')']
-(BuiltIn.DEFUN) defun
+(BuiltIn.DEFUN) defmacro
   (AtomType.SYMBOL) my-if
   (AtomType.LIST) ['test', 'then', 'else']
   (AtomType.STRING) 

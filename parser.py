@@ -131,19 +131,19 @@ class Parser:
         fndef = self.parse(expression)
         
         # Build function node
-        newFn = Node("defun", BuiltIn.DEFUN, [fnName, arguments, docstring, fndef])
+        newFn = Node(name, BuiltIn.DEFUN, [fnName, arguments, docstring, fndef])
         
         return newFn    
     
-    # Parse the quote-like forms:
-    # (quote (var1 var2 ...))
-    # '(var1 var2)
-    # 'var1
+    # Parse quote and unquote:
+    # (quote (var1 var2 ...)) OR '(var1 var2) OR 'var1
+    # `(+ ,x ,y)
     def parseQuote(self, expression: ParseList, name: str) -> Node:
         quote = Node(name, BuiltIn.QUOTE, [self.parse(expression)])
         
         return quote
 
+    # Parse quasi-quote  
     def parseQuasiQuote(self, expression: ParseList, name: str) -> Node:
         quasiQuote = Node("quasi-quote", BuiltIn.QUASIQUOTE)
         
