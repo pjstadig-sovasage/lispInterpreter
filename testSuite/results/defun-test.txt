@@ -1,7 +1,14 @@
+['(', '+', '1', '2', '3', ')']
+(BuiltIn.ADD) +
+  (AtomType.NUMBER) 1
+  (AtomType.NUMBER) 2
+  (AtomType.NUMBER) 3
+
 ['(', 'defun', 'factorial', '(', 'n', ')', '"Computes the factorial of a number recursively."', '(', 'if', '(', '<=', 'n', '1', ')', '1', '(', '*', 'n', '(', 'factorial', '(', '-', 'n', '1', ')', ')', ')', ')', ')']
 (BuiltIn.DEFUN) defun
   (AtomType.SYMBOL) factorial
-  (AtomType.LIST) ['n']
+  (AtomType.LIST) None
+    (AtomType.SYMBOL) n
   (AtomType.STRING) "Computes the factorial of a number recursively."
   (BuiltIn.IF) if
     (BuiltIn.LEQ) <=
@@ -18,7 +25,8 @@
 ['(', 'defun', 'fibonacci', '(', 'n', ')', '"Computes the nth Fibonacci number using recursion."', '(', 'if', '(', '<=', 'n', '1', ')', 'n', '(', '+', '(', 'fibonacci', '(', '-', 'n', '1', ')', ')', '(', 'fibonacci', '(', '-', 'n', '2', ')', ')', ')', ')', ')']
 (BuiltIn.DEFUN) defun
   (AtomType.SYMBOL) fibonacci
-  (AtomType.LIST) ['n']
+  (AtomType.LIST) None
+    (AtomType.SYMBOL) n
   (AtomType.STRING) "Computes the nth Fibonacci number using recursion."
   (BuiltIn.IF) if
     (BuiltIn.LEQ) <=
@@ -38,7 +46,8 @@
 ['(', 'defun', 'check-number', '(', 'x', ')', '(', 'cond', '(', '(', '>', 'x', '10', ')', '"Greater than 10"', ')', '(', '(', '<', 'x', '5', ')', '"Less than 5"', ')', '(', '(', '=', 'x', '7', ')', '"Equal to 7"', ')', '(', 't', '"Between 5 and 10"', ')', ')', ')']
 (BuiltIn.DEFUN) defun
   (AtomType.SYMBOL) check-number
-  (AtomType.LIST) ['x']
+  (AtomType.LIST) None
+    (AtomType.SYMBOL) x
   (AtomType.STRING) 
   (BuiltIn.COND) cond
     (AtomType.SYMBOL) >
@@ -58,7 +67,11 @@
 ['(', 'defun', 'add-pair', '(', '(', 'a', 'b', ')', ')', '(', '+', 'a', 'b', ')', ')']
 (BuiltIn.DEFUN) defun
   (AtomType.SYMBOL) add-pair
-  (AtomType.LIST) ['(', 'a', 'b']
+  (AtomType.LIST) None
+    (AtomType.SYMBOL) a
+      (AtomType.SYMBOL) b
   (AtomType.STRING) 
-  (AtomType.SYMBOL) )
+  (BuiltIn.ADD) +
+    (AtomType.SYMBOL) a
+    (AtomType.SYMBOL) b
 

@@ -42,35 +42,42 @@ class Parser:
         return self.parse(self.ParseList(expression))
     
     # Create AST given a tokenized expression
-    def parse(self, expression: ParseList) -> Node:
+    # Set quote to true to return a list
+    def parse(self, expression: ParseList, asList = False) -> Node:
         nextToken = expression.mpop()
         
-        # Start of new expression
+        # New expression
         if nextToken == "(":
-            # Check if operator is special form
-            operator = expression.mpop()
-            if operator in self.SPECIAL_FORMS:
-                return self.handleSpecialForm(expression, operator)
-            operator = self.tokenToNode(operator)
+            # Get the head value
+            head = expression.mpop()
+            head = self.tokenToNode(head)
 
-            # Recursively process arguments
-            while expression[0] != ")":
-                operator.children.append(self.parse(expression))
+            # Process as list
+            if (head.type != AtomType.SYMBOL and type(head.type) != BuiltIn) or asList:
+                head = Node(None, AtomType.LIST, [head]) # Old head becomes first element
+                
+            # Handle special forms
+            if head.val in self.SPECIAL_FORMS:
+                return self.handleSpecialForm(expression, head.val)
             
-            # Pop closing parentheses
-            expression.mpop()
-            return operator
-        # Check for special form
-        elif nextToken in self.SPECIAL_FORMS:
-            return self.handleSpecialForm(expression, nextToken)
+            # Process arguments 
+            while expression[0] != ")":
+                head.children.append(self.parse(expression))
+            expression.mpop() # Pop closing parentheses
+            
+            return head
         # Inside expression
         else:
+            # Check for special form
+            if nextToken in self.SPECIAL_FORMS:
+                return self.handleSpecialForm(expression, nextToken)
+            # Convert to node
             return self.tokenToNode(nextToken)
     
+    # Call the appropriate special form
     def handleSpecialForm(self, expression: ParseList, type: str) -> Node:
         specialForm = self.SPECIAL_FORMS[type]
         return specialForm[0](expression, specialForm[1])
-        
         
     # Given a token, return a node representing it
     def tokenToNode(self, nextToken) -> Node:
@@ -115,10 +122,9 @@ class Parser:
         expression.mpop()
 
         # Pop arguments 
-        arguments = []
+        arguments = Node(None, AtomType.LIST)
         while expression[0] != ")":
-            arguments.append(expression.mpop())
-        arguments = Node(arguments, AtomType.LIST)
+            arguments.children.append(self.parse(expression))
         expression.mpop()
 
         # Pop doc string
@@ -153,7 +159,7 @@ class Parser:
     # (quote (var1 var2 ...)) OR '(var1 var2) OR 'var1
     # `(+ ,x ,y)
     def parseQuote(self, expression: ParseList, name: str) -> Node:
-        quote = Node(name, BuiltIn.QUOTE, [self.parse(expression)])
+        quote = Node(name, BuiltIn.QUOTE, [self.parse(expression, asList=True)])
         
         return quote
 

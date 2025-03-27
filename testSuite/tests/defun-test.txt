@@ -1,3 +1,5 @@
+(+ 1 2 3)
+
 ;; Function for calculating the factorial of n
 (defun factorial (n)
   "Computes the factorial of a number recursively."
